@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Аромат жизни — создание аромата</title>
+  <meta name="description" content="Соберите свой парфюм по слоям: база, сердце и верхние ноты. Выбирайте ингредиенты — и наблюдайте, как рождается ваш аромат." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="stylesheet" href="style.css?v=1781556944" />
+</head>
+<body class="page-create">
+
+  <!-- Header / Nav -->
+  <header class="header header--parchment">
+    <a href="index.html" class="brand" aria-label="Аромат жизни — на главную">
+      <img class="brand__logo" src="assets/logo.png" alt="Аромат жизни" />
+      <span class="brand__name">Аромат жизни</span>
+    </a>
+
+    <button type="button" id="headerBackBtn" class="back-link">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M15 9H4M8.5 4l-5 5 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Назад</span>
+    </button>
+  </header>
+
+  <main class="section section--create-page">
+    <div class="create-stage">
+
+      <!-- LEFT: the flacon -->
+      <aside class="create-flacon">
+        <div class="flacon-frame">
+          <img class="flacon-still" id="flaconStill" src="assets/notes/flacon_poster.jpg" alt="Флакон будущего аромата" />
+          <video class="flacon-video" id="flaconVideo" src="assets/notes/flacon_anim.mp4" muted playsinline preload="auto" poster="assets/notes/flacon_poster.jpg"></video>
+        </div>
+        <div class="flacon-recipe" id="recipe" aria-live="polite">
+          <p class="flacon-recipe__empty" id="recipeEmpty">Здесь будет собираться ваш набор для создания флакона.</p>
+          <ul class="flacon-recipe__list" id="recipeList" hidden></ul>
+        </div>
+      </aside>
+
+      <!-- RIGHT: the builder -->
+      <section class="create-panel">
+        <p class="section__label" id="stepLabel">Конструктор аромата</p>
+        <h1 class="section__title" id="stepTitle">Соберём ваш парфюм по слоям</h1>
+        <p class="prose prose--lead" id="stepIntro">
+          Соберите свой аромат по слоям, а мы подготовим для вас <strong>набор для создания флакона</strong> —
+          подобранные ноты, основу и инструкцию, чтобы вы собрали парфюм своими руками.
+          Аромат строится в три слоя: <strong>база</strong> — фундамент и шлейф,
+          <strong>сердце</strong> — душа композиции, и <strong>старт</strong> — первое впечатление.
+        </p>
+
+        <!-- Гид по сочетаниям -->
+        <div class="guide-bar">
+          <button type="button" class="guide-btn" id="guideBtn" data-testid="guide-open" aria-haspopup="dialog">
+            <span class="guide-btn__q" aria-hidden="true">?</span>
+            <span>Гид по сочетаниям — что с чем смешивать</span>
+          </button>
+        </div>
+
+        <!-- Recommendations hint -->
+        <p class="create-hint" id="recoHint" hidden></p>
+
+        <!-- Note grid -->
+        <div class="notes-grid" id="notesGrid" role="listbox" aria-label="Ингредиенты"></div>
+
+        <!-- Feedback after picking -->
+        <div class="create-feedback" id="feedback" hidden></div>
+
+        <!-- Continue -->
+        <div class="create-actions" id="actionsWrap">
+          <p class="create-counter" id="counter"></p>
+          <div class="create-actions__btns">
+            <button class="btn btn--ghost" id="stepBackBtn" type="button" hidden>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M15 9H3M8 14l-5-5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Назад</span>
+            </button>
+            <button class="btn" id="nextBtn" disabled>
+              <span id="nextLabel">Продолжить</span>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- FINAL report (filled by JS) -->
+        <div class="create-result" id="result" hidden></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Info modal: подсказки по сочетаниям -->
+  <div class="info-modal" id="infoModal" hidden>
+    <div class="info-modal__backdrop" data-info-close></div>
+    <div class="info-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle" tabindex="-1">
+      <button type="button" class="info-modal__close" id="infoModalClose" data-info-close aria-label="Закрыть подсказку" data-testid="info-close">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <p class="info-modal__eyebrow" id="infoModalEyebrow"></p>
+      <h2 class="info-modal__title" id="infoModalTitle"></h2>
+      <div class="info-modal__body" id="infoModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Contacts (same as homepage) -->
+  <section id="contacts" class="section section--contacts section--contacts-parch">
+    <div class="section__inner">
+      <p class="section__label">Контакты</p>
+      <h2 class="section__title">Свяжитесь с нами</h2>
+      <p class="contacts__lead">Готовы получить набор для создания своего аромата? Напишите или позвоните — поможем собрать ваш флакон своими руками.</p>
+
+      <ul class="contacts">
+        <li class="contact">
+          <svg class="contact__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/>
+            <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact__body">
+            <span class="contact__label">Почта</span>
+            <a class="contact__value" href="mailto:oksikbychenko@yandex.ru">oksikbychenko@yandex.ru</a>
+          </div>
+        </li>
+
+        <li class="contact">
+          <svg class="contact__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact__body">
+            <span class="contact__label">Телефон</span>
+            <a class="contact__value" href="tel:+79670315767">+7 (967) 031-57-67</a>
+          </div>
+        </li>
+
+        <li class="contact">
+          <svg class="contact__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 4 3 11l5 2 2 6 3-4 5 4 3-15Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="m8 13 8-5-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact__body">
+            <span class="contact__label">Telegram</span>
+            <a class="contact__value" href="https://t.me/ceriodaphnia" target="_blank" rel="noopener">@ceriodaphnia</a>
+          </div>
+        </li>
+
+        <li class="contact">
+          <svg class="contact__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact__body">
+            <span class="contact__label">Часы работы</span>
+            <span class="contact__value contact__value--static">Ежедневно с 10:00 до 20:00</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <script src="script.js?v=1781556944"></script>
+  <script>
+  (function () {
+    // ============================================================
+    //  PERFUME BUILDER — ported from perfume_builder.py
+    // ============================================================
+
+    // slug is used for the image file in assets/notes/<slug>.jpg
+    // sweet:   тёплая съедобная сладость (для баланса мужской линии)
+    // tart:    терпкость / сухость / горчинка (для баланса женской линии)
+    // gender:  m | f | u  — базовая принадлежность ноты к линии
+    var BASE_NOTES = {
+      "Ваниль": {family:"gourmand", gender:"f", slug:"vanilla",   desc:"тёплая, сладкая, обволакивающая", sweet:3},
+      "Сандал": {family:"woody",    gender:"u", slug:"sandalwood", desc:"кремово-древесный, мягкий, медитативный", sweet:1},
+      "Мускус": {family:"musky",    gender:"u", slug:"musk",       desc:"чистый, телесный, обнимающий"},
+      "Пачули": {family:"earthy",   gender:"m", slug:"patchouli",  desc:"землистый, тёмный, шлейфовый", tart:2},
+      "Амбра":  {family:"amber",    gender:"u", slug:"amber",      desc:"смолисто-сладкий, золотистый, роскошный", sweet:2},
+      "Кедр":   {family:"woody",    gender:"m", slug:"cedar",      desc:"сухой, строгий, благородный лес", tart:1},
+      // — тёплая сладость в мужскую базу —
+      "Тонка":  {family:"gourmand", gender:"m", slug:"tonka",      desc:"миндально-табачная, сладко-пряная, мужественная", sweet:3},
+      "Какао":  {family:"gourmand", gender:"m", slug:"cocoa",      desc:"горький тёмный шоколад с тёплой сладостью", sweet:2, tart:1},
+      "Табак":  {family:"amber",    gender:"m", slug:"tobacco",    desc:"медово-табачный, сухой и сладкий одновременно", sweet:2, tart:1},
+      // — терпкость в женскую базу —
+      "Ирис":   {family:"powdery",  gender:"f", slug:"iris",       desc:"холодно-пудровый, землистый, благородно-сухой", tart:2}
+    };
+    var MIDDLE_NOTES = {
+      "Роза":        {family:"floral",   gender:"f", slug:"rose",     desc:"классический цветочный, романтичный"},
+      "Жасмин":      {family:"floral",   gender:"f", slug:"jasmine",  desc:"насыщенный белый цветок, чувственный"},
+      "Иланг-иланг": {family:"floral",   gender:"f", slug:"ylang",    desc:"экзотический, слегка банановый цветок", sweet:1},
+      "Лаванда":     {family:"aromatic", gender:"m", slug:"lavender", desc:"травянисто-свежий, успокаивающий"},
+      "Корица":      {family:"spicy",    gender:"u", slug:"cinnamon", desc:"пряная, согревающая, уютная", sweet:1},
+      "Фиалка":      {family:"powdery",  gender:"f", slug:"violet",   desc:"пудровый, нежный, ретро"},
+      "Герань":      {family:"green",    gender:"m", slug:"geranium", desc:"зелёно-розовый, бодрящий", tart:1},
+      "Нероли":      {family:"floral",   gender:"u", slug:"neroli",   desc:"цветочно-цитрусовый, светлый"},
+      // — сладко-пряное тепло, читается мужественно —
+      "Шафран":      {family:"spicy",    gender:"m", slug:"saffron",  desc:"кожано-сладкая дорогая пряность", sweet:1, tart:1},
+      // — сухая горчинка и терпкость в женское сердце —
+      "Полынь":      {family:"aromatic", gender:"f", slug:"wormwood", desc:"горько-травянистая, дерзкая, прохладная", tart:3},
+      "Чёрный чай":  {family:"green",    gender:"f", slug:"blacktea",  desc:"терпкий дубильный лист с дымкой", tart:3}
+    };
+    var TOP_NOTES = {
+      "Бергамот":      {family:"citrus",   gender:"u", slug:"bergamot",   desc:"искристый цитрус с горчинкой", tart:1},
+      "Лимон":         {family:"citrus",   gender:"m", slug:"lemon",      desc:"яркий, чистый, бодрящий", tart:1},
+      "Грейпфрут":     {family:"citrus",   gender:"u", slug:"grapefruit", desc:"сочный, слегка горький цитрус", tart:2},
+      "Мята":          {family:"aromatic", gender:"m", slug:"mint",       desc:"холодная, освежающая зелень"},
+      "Яблоко":        {family:"fruity",   gender:"u", slug:"apple",      desc:"хрустящее, сочное, лёгкое", sweet:1},
+      "Груша":         {family:"fruity",   gender:"f", slug:"pear",       desc:"нежно-сладкий сочный фрукт", sweet:1},
+      "Чёрный перец":  {family:"spicy",    gender:"m", slug:"blackpepper",desc:"сухой, покалывающий старт", tart:1},
+      "Розовый перец": {family:"spicy",    gender:"u", slug:"pinkpepper", desc:"игристый, слегка фруктовый перец"},
+      "Кардамон":      {family:"aromatic", gender:"u", slug:"cardamom",   desc:"пряно-свежий, элегантный"},
+      "Зелёный чай":   {family:"green",    gender:"u", slug:"greentea",   desc:"прозрачный, спокойный, чистый", tart:1},
+      "Чёрная смородина": {family:"fruity", gender:"f", slug:"blackcurrant", desc:"терпко-ягодный кассис, искристый", tart:2},
+      // — медовая сладость старта в мужскую линию —
+      "Мёд":           {family:"gourmand", gender:"m", slug:"honey",      desc:"густо-сладкий, тёплый, чуть звериный", sweet:3},
+      // — резкая терпкость старта в женскую линию —
+      "Ревень":        {family:"fruity",   gender:"f", slug:"rhubarb",    desc:"кисло-терпкий, хрустящий, зелёно-розовый", tart:3}
+    };
+
+    // Линии аромата: мужская / женская / унисекс. allow — какие ноты по характеру допускаются.
+    var LINES = {
+      m: {code:"m", title:"Мужская линия",  tagline:"древесно-пряные и свежие аккорды с тёплой сладкой искрой",   allow:{m:1,u:1}},
+      f: {code:"f", title:"Женская линия",  tagline:"цветочные и пудровые аккорды с терпкой дерзкой гранью",       allow:{f:1,u:1}},
+      // Унисекс — намеренно широкая, кросс-семейная линия: открыты все ноты,
+      // чтобы можно было свободно смешивать мужское и женское и искать неожиданные созвучия.
+      u: {code:"u", title:"Унисекс линия", tagline:"широкая палитра: открыты все ноты для смелых кросс-сочетаний", allow:{m:1,f:1,u:1}, broad:true}
+    };
+    function poolForLine(pool, lineCode) {
+      var allow = LINES[lineCode].allow;
+      var out = {};
+      Object.keys(pool).forEach(function(name){
+        if (allow[pool[name].gender]) out[name] = pool[name];
+      });
+      return out;
+    }
+
+    // Affinity matrix (0..3). Keys are "famA|famB".
+    var AFFINITY = {
+      // gourmand
+      "gourmand|floral":3,"gourmand|spicy":3,"gourmand|fruity":3,"gourmand|citrus":2,
+      "gourmand|aromatic":1,"gourmand|green":0,"gourmand|powdery":3,"gourmand|woody":2,
+      "gourmand|amber":3,"gourmand|musky":3,"gourmand|earthy":2,
+      // woody
+      "woody|floral":3,"woody|spicy":3,"woody|aromatic":3,"woody|citrus":3,"woody|green":2,
+      "woody|fruity":2,"woody|powdery":2,"woody|musky":3,
+      // musky
+      "musky|floral":3,"musky|powdery":3,"musky|citrus":2,"musky|fruity":2,"musky|green":2,
+      "musky|aromatic":2,"musky|spicy":2,"musky|amber":3,"musky|earthy":2,
+      // earthy
+      "earthy|spicy":3,"earthy|floral":2,"earthy|woody":3,"earthy|green":2,"earthy|citrus":2,
+      "earthy|fruity":1,"earthy|aromatic":2,"earthy|powdery":1,"earthy|amber":3,
+      // amber
+      "amber|spicy":3,"amber|floral":3,"amber|citrus":3,"amber|fruity":2,"amber|aromatic":2,
+      "amber|green":1,"amber|powdery":3,"amber|woody":3,
+      // floral
+      "floral|citrus":3,"floral|fruity":3,"floral|powdery":3,"floral|spicy":3,
+      "floral|aromatic":2,"floral|green":2,
+      // aromatic
+      "aromatic|citrus":3,"aromatic|green":3,"aromatic|spicy":2,"aromatic|fruity":2,
+      "aromatic|powdery":2,
+      // citrus
+      "citrus|green":3,"citrus|fruity":3,"citrus|spicy":2,"citrus|powdery":2,
+      // spicy
+      "spicy|fruity":2,"spicy|powdery":2,"spicy|green":1,
+      // green
+      "green|fruity":2,"green|powdery":1,
+      // fruity
+      "fruity|powdery":2
+    };
+    function affinity(a, b) {
+      if (a === b) return 2;
+      if (AFFINITY[a+"|"+b] !== undefined) return AFFINITY[a+"|"+b];
+      if (AFFINITY[b+"|"+a] !== undefined) return AFFINITY[b+"|"+a];
+      return 1;
+    }
+
+    var FAMILY_MOOD = {
+      gourmand:"сладкий и уютный, как десерт", woody:"благородный и тёплый, с древесным шлейфом",
+      musky:"чистый, «кожный», очень личный", earthy:"глубокий, землистый, с характером",
+      amber:"роскошный, тёплый, золотистый", floral:"цветочный и романтичный",
+      aromatic:"свежий, травянисто-прохладный", spicy:"пряный, согревающий, дерзкий",
+      powdery:"пудровый, мягкий, винтажный", green:"зелёный, природный, бодрящий",
+      citrus:"искристый, освежающий, утренний", fruity:"сочный, игривый, лёгкий"
+    };
+    var FAMILY_PROFILE = {
+      gourmand:{about:"съедобная сладость — ваниль, карамель, выпечка; аромат-«обнимашка»", good:"вкусный, тёплый, притягивает людей, отлично греет в холод", weak:"может приедаться и казаться тяжёлым в жару или в офисе"},
+      woody:{about:"сухое благородное дерево — сандал, кедр; спокойная элегантность", good:"универсален, звучит дорого, даёт стойкий мягкий шлейф", weak:"сам по себе бывает «плоским», ему нужен яркий верх для жизни"},
+      musky:{about:"чистый телесный мускус — запах «чистой кожи» и уюта", good:"деликатный, не раздражает, идеален для близкого круга и кожи", weak:"тихий и интимный — на дистанции его почти не слышно"},
+      earthy:{about:"земля, мох, тёмные пачули — глубина «осеннего леса»", good:"очень стойкий, мощный шлейф, выделяет из толпы", weak:"тяжёлый и не всем понятный, легко переборщить"},
+      amber:{about:"смолистое золото — сладкая тёплая амбра, восточная роскошь", good:"роскошный, обволакивающий, прекрасен для вечера и зимы", weak:"насыщенный и плотный — днём в жару может «давить»"},
+      floral:{about:"живые цветы — роза, жасмин; романтика и женственность", good:"универсально-приятный, нарядный, легко считывается окружающими", weak:"в избытке звучит «старомодно» или приторно"},
+      aromatic:{about:"травы и прохлада — лаванда, кардамон; чистый «спа»-холодок", good:"освежает, успокаивает, отлично работает днём и в жару", weak:"бывает «мыльным» и недостаточно ярким для вечера"},
+      spicy:{about:"специи — перец, корица, гвоздика; тепло и дерзость", good:"добавляет характер и энергию, заметен в толпе", weak:"острый и навязчивый без баланса сладким/древесным"},
+      powdery:{about:"пудра — фиалка, ирис; нежный ретро-шик", good:"мягкий, уютный, прекрасно смягчает резкие ноты", weak:"может выглядеть «возрастным» и тусклым без свежего акцента"},
+      green:{about:"свежесрезанная зелень, листья, чай — природа и прохлада", good:"бодрит, звучит чисто и натурально, идеален весной/летом", weak:"холодный и резкий, плохо дружит с плотной сладостью"},
+      citrus:{about:"цитрусы — бергамот, лимон; искристый солнечный старт", good:"мгновенно освежает, поднимает настроение, чистый", weak:"быстро выветривается — живёт минуты, нужен крепкий низ"},
+      fruity:{about:"сочные фрукты — яблоко, груша; игривость и лёгкость", good:"весёлый, молодой, лёгкий для повседневности", weak:"может звучать «подростково-сладко» и несерьёзно"}
+    };
+    var CLASH_REASONS = {
+      "gourmand|green":"тёплая съедобная сладость и холодная резкая зелень тянут в разные стороны: сладкое забивает свежесть, а зелень делает десертную базу горьковатой и неопрятной",
+      "aromatic|gourmand":"плотная десертная сладость глушит прохладную травяную свежесть, и аромат начинает «мылить» вместо того, чтобы освежать",
+      "amber|green":"смолистая тяжёлая амбра и прозрачная зелень живут в разных «весовых категориях»: зелень теряется и лишь добавляет лёгкую горечь",
+      "green|spicy":"острые согревающие специи и холодная зелень плохо согласуются по температуре и могут давать резкий, «колючий» переход",
+      "green|powdery":"бодрая зелень и мягкая пудра плохо «склеиваются»: пудра гасит свежесть, а зелень делает пудру тусклой",
+      "earthy|fruity":"тёмная землистая глубина и лёгкий сочный фрукт плохо сочетаются: земля давит фрукт, а фрукт рядом с ней кажется случайным",
+      "earthy|powdery":"грубоватая земля и нежная пудра создают несогласованную фактуру — одна тянет вниз, другая размывается"
+    };
+    var DEFAULT_CLASH = "эти семейства звучат в разных «температурах» и не поддерживают друг друга — переход выходит резким, ноты спорят, а не сливаются в один аромат";
+
+    // ============================================================
+    //  БАЗА ЗНАНИЙ О СОЧЕТАНИЯХ
+    //  Общие правила по семействам нот + частные рекомендации
+    //  по каждой конкретной ноте: с чем дружит и чего избегать.
+    // ============================================================
+    var FAMILY_NAME_RU = {
+      gourmand:"Гурманские", woody:"Древесные", musky:"Мускусные", earthy:"Землистые",
+      amber:"Амбровые", floral:"Цветочные", aromatic:"Ароматические травы", spicy:"Пряные",
+      powdery:"Пудровые", green:"Зелёные", citrus:"Цитрусовые", fruity:"Фруктовые"
+    };
+    // Общие правила: для каждого семейства — лучшие партнёры, осторожные сочетания и совет.
+    var FAMILY_RULES = {
+      gourmand:{loves:["amber","floral","spicy","fruity","powdery","musky"], careful:["green","aromatic"],
+        tip:"Сладкие гурманы любят тёплое окружение — амбру, специи, цветы. Холодная зелень и травы рядом с ними «киснут», поэтому к десертной базе берите тёплый, а не свежий верх."},
+      woody:{loves:["citrus","aromatic","spicy","floral","musky"], careful:["fruity"],
+        tip:"Дерево — универсальный каркас. Оживляйте его свежим цитрусом или травами сверху; слишком сочный фрукт делает его «компотным»."},
+      musky:{loves:["floral","powdery","amber","citrus"], careful:["earthy"],
+        tip:"Мускус — мягкий «клей» композиции, дружит почти со всем. Тёмная земля рядом с ним может звучать грязновато."},
+      earthy:{loves:["woody","spicy","amber","green"], careful:["fruity","powdery"],
+        tip:"Землистые пачули обожают древесно-пряное тепло. Нежная пудра и лёгкий фрукт рядом теряются."},
+      amber:{loves:["spicy","floral","citrus","woody","powdery"], careful:["green"],
+        tip:"Амбра — золотая роскошь вечера. Ей идут специи и цветы; прозрачная зелень рядом просто пропадает."},
+      floral:{loves:["citrus","fruity","powdery","spicy","musky"], careful:["earthy"],
+        tip:"Цветы дружелюбны и нарядны. Поддержите их цитрусом или пудрой; тяжёлая земля их «глушит»."},
+      aromatic:{loves:["citrus","green","woody","spicy"], careful:["gourmand"],
+        tip:"Травы и лаванда — про свежесть и чистоту. Плотная сладость их «замыливает», поэтому держите гурманы в стороне."},
+      spicy:{loves:["amber","woody","gourmand","floral"], careful:["green"],
+        tip:"Специи добавляют характер. Им нужна тёплая опора — амбра, дерево, сладость; с холодной зеленью выходит «колко»."},
+      powdery:{loves:["floral","musky","amber","gourmand"], careful:["green","earthy"],
+        tip:"Пудра смягчает резкие ноты. Берите её к цветам и мускусу; зелень и земля делают её тусклой."},
+      green:{loves:["citrus","aromatic","woody","fruity"], careful:["gourmand","amber","powdery","spicy"],
+        tip:"Зелень — про прохладу и природу. Она дружит со свежим, но спорит с плотной сладостью и тяжёлым теплом."},
+      citrus:{loves:["green","fruity","floral","aromatic","woody"], careful:[],
+        tip:"Цитрус освежает старт почти любого аромата, но быстро улетает — обязательно дайте ему стойкую базу."},
+      fruity:{loves:["floral","citrus","gourmand","green"], careful:["earthy"],
+        tip:"Сочные фрукты игривы и молоды. Им к лицу цветы и цитрус; тёмная земля делает их случайными."}
+    };
+    // Частные рекомендации по конкретным нотам.
+    var NOTE_TIPS = {
+      "Ваниль":{love:"амбра, табак, какао, роза, специи", avoid:"резкая зелень и мята — гасят её уют",
+        note:"Сердце сладких ароматов. Каплю ванили добавляют, чтобы смягчить даже самую брутальную древесно-табачную базу."},
+      "Тонка":{love:"табак, кедр, лаванда, какао", avoid:"яркий цитрус в избытке — спорит со сладостью",
+        note:"Главный секрет «сладкого мужского»: бобы тонка дают миндально-табачную сладость, которая остаётся мужественной."},
+      "Какао":{love:"ваниль, табак, пачули, апельсин", avoid:"водянистая зелень — делает его пыльным",
+        note:"Горький шоколад добавляет тёплую сладость без приторности — идеален, чтобы «подсластить» мужскую композицию."},
+      "Табак":{love:"ваниль, тонка, мёд, кедр, специи", avoid:"свежая мята — конфликт температур",
+        note:"Сухой и сладкий одновременно: даёт мужской линии богатую медово-табачную теплоту."},
+      "Мёд":{love:"табак, роза, шафран, амбра", avoid:"много мускуса — может стать «душным»",
+        note:"Самая «звериная» сладость. В мужском старте звучит дерзко и тепло, а не по-детски."},
+      "Шафран":{love:"роза, кожа, амбра, уд/дерево", avoid:"переизбыток цитруса",
+        note:"Дорогая пряность с кожано-сладкой гранью — мостик между сладким и мужественным."},
+      "Полынь":{love:"лаванда, цитрус, дерево, кожа", avoid:"плотная ваниль — заглушает её горечь",
+        note:"Горькая трава, которая придаёт женскому аромату дерзкую терпкость вместо привычной сладости."},
+      "Чёрный чай":{love:"бергамот, роза, специи, дерево", avoid:"сливочные гурманы — теряется дубильность",
+        note:"Терпкий дубильный лист с дымкой: делает цветочную женскую композицию строже и взрослее."},
+      "Ревень":{love:"роза, смородина, цитрус, зелёный чай", avoid:"тяжёлая амбра — давит его свежесть",
+        note:"Кисло-терпкий хруст для старта — добавляет женскому аромату резкую освежающую грань."},
+      "Ирис":{love:"фиалка, мускус, кедр, роза", avoid:"сочный фрукт — спорит с его сухостью",
+        note:"Холодно-пудровый и землисто-сухой: даёт пудре благородную терпкую строгость."},
+      "Чёрная смородина":{love:"роза, цитрус, зелёный чай, ревень", avoid:"тёмная земля",
+        note:"Кассис — искристая терпкая ягода, освежающая и чуть «колючая»."},
+      "Роза":{love:"пачули, шафран, цитрус, специи, чёрный чай", avoid:"переизбыток сладкого",
+        note:"Универсальный цветок: с пачули и специями звучит дерзко, с ванилью — нежно."},
+      "Сандал":{love:"роза, ваниль, мускус, цитрус", avoid:"много сочного фрукта",
+        note:"Кремовое дерево-основа, которое примиряет почти любые ноты."},
+      "Кедр":{love:"цитрус, лаванда, специи, тонка", avoid:"приторная сладость без баланса",
+        note:"Сухой строгий лес — отличный каркас и для мужских, и для унисекс-ароматов."},
+      "Пачули":{love:"роза, дерево, амбра, какао", avoid:"лёгкий фрукт и пудра — теряются",
+        note:"Землистая глубина и мощный шлейф; в малых дозах облагораживает сладкое."},
+      "Амбра":{love:"специи, цветы, цитрус, табак", avoid:"прозрачная зелень",
+        note:"Тёплое смолистое золото — сердце восточных и роскошных вечерних ароматов."},
+      "Бергамот":{love:"почти всё — дерево, цветы, чай", avoid:"ничего критичного, но быстро улетает",
+        note:"Идеальный искристый старт; обязательно дайте ему стойкую базу."},
+      "Лаванда":{love:"цитрус, дерево, тонка, полынь", avoid:"плотные гурманы",
+        note:"Классика фужерных мужских ароматов; с тонка даёт мягкую «сладкую» свежесть."}
+    };
+    function noteTip(name){ return NOTE_TIPS[name] || null; }
+    // ============================================================
+    //  ИНДИВИДУАЛЬНЫЕ ОПИСАНИЯ ДЛЯ ОБРАТНОЙ СВЯЗИ ПО КАЖДОЙ НОТЕ
+    // ============================================================
+    var NOTE_PROFILE = {
+      // --- БАЗА ---
+      "Ваниль":{about:"тёплая сладкая ваниль — обволакивающее «съедобное» сердце аромата",
+        good:"делает композицию уютной и притягательной, смягчает даже самые брутальные ноты",
+        weak:"в жару и в избытке может казаться приторной и тяжёлой"},
+      "Сандал":{about:"кремово-древесный сандал — мягкая медитативная основа",
+        good:"звучит дорого и спокойно, примиряет почти любые ноты вокруг себя",
+        weak:"сам по себе тихий — без яркого верха может казаться плосковатым"},
+      "Мускус":{about:"чистый телесный мускус — запах «второй кожи» и уюта",
+        good:"деликатно склеивает композицию и звучит очень личной, тёплой нотой",
+        weak:"тихий и интимный — на дистанции его почти не слышно"},
+      "Пачули":{about:"тёмные землистые пачули — глубокий шлейфовый фундамент",
+        good:"даёт мощный благородный шлейф и выделяет аромат из толпы",
+        weak:"тяжёлые и не всем понятные — в избытке звучат «грязновато»"},
+      "Амбра":{about:"смолистая золотистая амбра — тёплое восточное сердце шлейфа",
+        good:"делает аромат роскошным, обволакивающим, идеальным для вечера и холодов",
+        weak:"насыщенная и плотная — днём в жару может «давить»"},
+      "Кедр":{about:"сухой строгий кедр — благородный древесный каркас",
+        good:"даёт сдержанную элегантность и хорошо держит сверху цитрусы и специи",
+        weak:"строгий и сухой — без сладкой опоры может звучать аскетично"},
+      "Тонка":{about:"бобы тонка — миндально-табачная сладость с мужественной гранью",
+        good:"добавляет тёплую сладость, которая не превращает аромат в десерт",
+        weak:"в избытке плотная и душная, спорит с резким цитрусом сверху"},
+      "Какао":{about:"горький тёмный шоколад — тёплая сладость без приторности",
+        good:"даёт мужественную «вкусную» теплоту и красиво ложится к древесине",
+        weak:"с водянистой зеленью теряется и кажется «пыльным»"},
+      "Табак":{about:"сухой медово-табачный лист — благородная винтажная теплота",
+        good:"добавляет характер и тёплый шлейф, звучит взросло и уверенно",
+        weak:"конфликтует со свежей мятой и резкой зеленью по температуре"},
+      "Ирис":{about:"холодно-пудровый ирис — землисто-сухая благородная пудра",
+        good:"придаёт композиции дорогую сдержанность и сухую терпкую строгость",
+        weak:"с сочным фруктом конфликтует — сухость спорит с сочностью"},
+
+      // --- СЕРДЦЕ ---
+      "Роза":{about:"классическая роза — романтичный цветочный центр аромата",
+        good:"универсальна: с пачули звучит дерзко, с ванилью нежно, нарядна в любом контексте",
+        weak:"в избытке сладкого окружения становится «парфюмерно-старомодной»"},
+      "Жасмин":{about:"насыщенный белый жасмин — чувственный, медово-цветочный",
+        good:"даёт аромату глубину и притягательную чувственность",
+        weak:"плотный и «жирный» — в избытке может казаться душным"},
+      "Иланг-иланг":{about:"экзотический иланг — слегка банановый, сливочно-цветочный",
+        good:"добавляет аромату тропическую плотную сладость и роскошь",
+        weak:"очень насыщенный — легко перетягивает на себя всю композицию"},
+      "Лаванда":{about:"травянисто-свежая лаванда — успокаивающая фужерная классика",
+        good:"даёт мужественную чистоту и прохладу, отлично сочетается с тонка и кедром",
+        weak:"с плотными гурманами «мылит» — теряет свою свежесть"},
+      "Корица":{about:"пряная согревающая корица — уютная тёплая специя",
+        good:"добавляет характер и зимнюю теплоту, дружит с ванилью и амброй",
+        weak:"легко переборщить — становится резкой и «новогодней»"},
+      "Фиалка":{about:"нежная пудровая фиалка — ретро-шик с лёгкой зеленцой",
+        good:"смягчает резкие ноты и даёт винтажную мягкость",
+        weak:"без свежего акцента сверху может звучать «возрастно» и тускло"},
+      "Герань":{about:"зелёно-розовая герань — бодрящий травянисто-цветочный аккорд",
+        good:"добавляет аромату свежий объём и лёгкую мужественную грань",
+        weak:"с тяжёлой сладостью спорит — её зелёная грань становится горьковатой"},
+      "Нероли":{about:"светлый цветочно-цитрусовый нероли — солнечная свежесть апельсинового цвета",
+        good:"освежает сердце композиции, звучит чисто и нарядно",
+        weak:"быстро улетучивается и теряется под плотной сладкой базой"},
+      "Шафран":{about:"кожано-сладкий шафран — дорогая пряность с восточной гранью",
+        good:"строит мост между сладким и мужественным, звучит роскошно",
+        weak:"переизбыток цитруса сверху ломает его пряную теплоту"},
+      "Полынь":{about:"горько-травянистая полынь — дерзкая прохладная горчинка",
+        good:"придаёт композиции взрослую терпкость вместо привычной сладости",
+        weak:"плотная ваниль её попросту заглушает"},
+      "Чёрный чай":{about:"терпкий дубильный чайный лист с лёгкой дымкой",
+        good:"делает цветочное сердце строже, глубже и взрослее",
+        weak:"в окружении сливочных гурманов теряет свою дубильность"},
+
+      // --- СТАРТ ---
+      "Бергамот":{about:"искристый бергамот — цитрус с лёгкой благородной горчинкой",
+        good:"даёт идеальный сверкающий старт почти к любой базе",
+        weak:"улетает за минуты — без стойкой базы исчезает бесследно"},
+      "Лимон":{about:"яркий чистый лимон — бодрящий солнечный цитрус",
+        good:"мгновенно освежает и поднимает настроение, звучит спортивно",
+        weak:"живёт минуты и легко становится «бытовым», если не поддержать снизу"},
+      "Грейпфрут":{about:"сочный грейпфрут — слегка горький розовый цитрус",
+        good:"даёт взрослый цитрусовый старт с характером, не банальный",
+        weak:"быстро выветривается — без стойкого низа исчезает"},
+      "Мята":{about:"холодная освежающая мята — ледяная зелёная вспышка",
+        good:"даёт мощный охлаждающий эффект и мужественную свежесть",
+        weak:"конфликтует по температуре с табаком и плотной ванилью"},
+      "Яблоко":{about:"хрустящее сочное яблоко — лёгкий фруктовый старт",
+        good:"делает аромат игривым, молодым и приветливым",
+        weak:"может звучать «подростково» рядом с серьёзной тёмной базой"},
+      "Груша":{about:"нежно-сладкая сочная груша — мягкий женственный фрукт",
+        good:"добавляет лёгкую сладость и романтичную свежесть",
+        weak:"рядом с тёмной землистой базой кажется случайной"},
+      "Чёрный перец":{about:"сухой покалывающий чёрный перец — резкий пряный старт",
+        good:"даёт аромату остроту и характер с первой секунды",
+        weak:"с холодной зеленью звучит «колко» и резко"},
+      "Розовый перец":{about:"игристый розовый перец — лёгкая фруктово-пряная искра",
+        good:"освежает старт и добавляет современный нарядный объём",
+        weak:"легко теряется под плотными сладкими нотами"},
+      "Кардамон":{about:"пряно-свежий кардамон — элегантная прохладная специя",
+        good:"даёт аромату дорогую восточную нотку без тяжести",
+        weak:"в избытке становится «кулинарным» и навязчивым"},
+      "Зелёный чай":{about:"прозрачный зелёный чай — чистая спокойная свежесть",
+        good:"даёт медитативный лёгкий старт, звучит благородно и тихо",
+        weak:"плохо дружит с плотной сладостью — сладкое его «гасит»"},
+      "Чёрная смородина":{about:"терпкий искристый кассис — колючая ягода с зелёной гранью",
+        good:"даёт женственному аромату резкую освежающую дерзость",
+        weak:"рядом с тёмной землёй её свежесть теряется"},
+      "Мёд":{about:"густо-сладкий медовый старт — тёплый, чуть «звериный»",
+        good:"добавляет дерзкую сладкую теплоту в мужской аромат",
+        weak:"с большим количеством мускуса может стать душноватым"},
+      "Ревень":{about:"кисло-терпкий ревень — хрустящий зелёно-розовый старт",
+        good:"даёт женственному аромату резкую освежающую грань вместо привычной сладости",
+        weak:"тяжёлая амбра внизу давит его свежесть и превращает в «компот»"}
+    };
+    function profileForNote(name, data){
+      var np = NOTE_PROFILE[name];
+      var fp = FAMILY_PROFILE[data.family] || {};
+      if (!np) return fp;
+      return {about: np.about || fp.about, good: np.good || fp.good, weak: np.weak || fp.weak};
+    }
+
+
+    var OCCASION = {
+      high_warm:"Тёплый вечерний выход: ужин, свидание, театр, праздник.",
+      high_fresh:"Дневной образ и офис, прогулки, деловые встречи, жара.",
+      balanced:"Универсально: от рабочего дня до неформального вечера.",
+      bold:"Когда хочется выделиться: вечеринка, клуб, особое событие."
+    };
+
+    // Доп. вес по линии: мужская добирает сладость, женская — терпкость,
+    // унисекс ровно поощряет «широту» (и сладкое, и терпкое одинаково).
+    function lineBias(d, lineCode) {
+      var sweet = d.sweet || 0, tart = d.tart || 0;
+      if (lineCode === 'm') return sweet * 0.35;
+      if (lineCode === 'f') return tart * 0.35;
+      if (lineCode === 'u') return (sweet + tart) * 0.18;
+      return 0;
+    }
+    function rankCandidates(chosenFams, pool, topN, lineCode) {
+      var scored = [];
+      for (var name in pool) {
+        var d = pool[name];
+        var sum = 0;
+        for (var i=0;i<chosenFams.length;i++) sum += affinity(d.family, chosenFams[i]);
+        scored.push({name:name, data:d, avg: sum/chosenFams.length + lineBias(d, lineCode)});
+      }
+      scored.sort(function(a,b){ return b.avg - a.avg; });
+      return scored.slice(0, topN);
+    }
+    function clashExplanation(noteFam, chosenFams) {
+      var worstFam=null, worst=99;
+      for (var i=0;i<chosenFams.length;i++){ var s=affinity(noteFam,chosenFams[i]); if(s<worst){worst=s;worstFam=chosenFams[i];} }
+      var key = [noteFam,worstFam].sort().join("|");
+      var reason = CLASH_REASONS[key] || DEFAULT_CLASH;
+      return {worstFam:worstFam, reason:reason};
+    }
+    function explainChoice(name, data, chosenFams) {
+      var fam = data.family;
+      var scores = [];
+      for(var i=0;i<chosenFams.length;i++) scores.push(affinity(fam,chosenFams[i]));
+      var sum=0; for(var j=0;j<scores.length;j++) sum+=scores[j];
+      var avg = sum/scores.length;
+      var minScore = Math.min.apply(null, scores);
+      var prof = profileForNote(name, data);
+      var lines = [];
+      var verdict;
+      if (avg >= 2.5) {
+        verdict = "great";
+        lines.push("Отличный выбор. Это " + prof.about + ".");
+        lines.push("Чем хорош: " + prof.good + " — и идеально ложится к уже выбранному, аромат звучит цельно и гармонично.");
+      } else if (avg >= 1.7) {
+        verdict = "good";
+        lines.push("Хороший выбор. Это " + prof.about + ".");
+        lines.push("Чем хорош: " + prof.good + ". С композицией дружит, ноты поддерживают друг друга.");
+      } else if (avg >= 1.0) {
+        verdict = "mild";
+        var cm = clashExplanation(fam, chosenFams);
+        var clashKey = [fam, cm.worstFam].sort().join("|");
+        lines.push("На любителя. Это " + prof.about + ".");
+        // если есть явно слабый мост (score≤1) — объясняем конкретно, иначе общим текстом
+        if (minScore <= 1 && CLASH_REASONS[clashKey]) {
+          lines.push("Слабое место: " + cm.reason + ". Может выстрелить как авторская находка, но риск есть — звучит смело.");
+        } else {
+          lines.push("Сочетание необычное: " + prof.weak + ". Может выстрелить как авторская находка, но риск есть — звучит смело.");
+        }
+      } else {
+        verdict = "clash";
+        var c = clashExplanation(fam, chosenFams);
+        var worstMood = FAMILY_MOOD[c.worstFam] || c.worstFam;
+        lines.push("Спорное сочетание. Это " + prof.about + ".");
+        lines.push("Чем недостаточно хорош здесь: " + c.reason + ".");
+        lines.push("Конкретно: «" + worstMood + "» рядом с этой нотой звучит дисгармонично — лучше заменить на рекомендованную (со звёздочками ★).");
+      }
+      return {avg:avg, verdict:verdict, text:lines.join(" ")};
+    }
+
+    function suggestOccasion(notes) {
+      var warm = {gourmand:1,amber:1,woody:1,spicy:1,musky:1,earthy:1,powdery:1};
+      var fresh = {citrus:1,green:1,aromatic:1,fruity:1,floral:1};
+      var w=0, fr=0, hasSpicy=false;
+      notes.forEach(function(n){ if(warm[n.family])w++; if(fresh[n.family])fr++; if(n.family==="spicy")hasSpicy=true; });
+      if (hasSpicy && w>=fr) return OCCASION.bold;
+      if (w>fr) return OCCASION.high_warm;
+      if (fr>w) return OCCASION.high_fresh;
+      return OCCASION.balanced;
+    }
+    function estimateLongevity(notes) {
+      var baseFam = notes[0].family;
+      if ({earthy:1,amber:1,woody:1,gourmand:1}[baseFam]) return "высокая (8–12 часов), мощный шлейф";
+      if (baseFam==="musky") return "средняя (5–7 часов), деликатный шлейф «при себе»";
+      return "средняя (5–7 часов)";
+    }
+    function similarTo(notes) {
+      var f={}; notes.forEach(function(n){f[n.family]=1;});
+      if (f.gourmand && f.spicy) return "тёплые сладко-пряные «гурманы» в духе Mugler Angel / YSL Black Opium";
+      if (f.amber && (f.spicy||f.floral)) return "восточно-амбровые ароматы в духе ориентальной классики";
+      if (f.woody && (f.citrus||f.aromatic)) return "свежие древесные фужеры в духе универсальных унисекс-ароматов";
+      if (f.floral && (f.musky||f.powdery)) return "мягкие цветочно-пудровые ароматы «второй кожи»";
+      if (f.citrus || f.green) return "чистые свежие одеколоны для жары и спорта";
+      return "авторская композиция со своим характером";
+    }
+    function describeBlend(notes) {
+      var moods=[], seen={};
+      notes.forEach(function(n){ if(!seen[n.family]){moods.push(FAMILY_MOOD[n.family]||n.family); seen[n.family]=1;} });
+      return moods;
+    }
+
+    // ============================================================
+    //  STATE & DOM
+    // ============================================================
+    var STEPS = [
+      {key:"base",   pool:BASE_NOTES,   max:1, layer:"база",
+       label:"Шаг 2 из 4 · База", title:"Базовая нота — фундамент",
+       intro:"База — это фундамент аромата: она держит композицию и отвечает за шлейф и стойкость. Выберите одну ноту."},
+      {key:"middle", pool:MIDDLE_NOTES, max:2, layer:"сердце",
+       label:"Шаг 3 из 4 · Сердце", title:"Средние ноты — душа аромата",
+       intro:"Сердце раскрывается следом за стартом и звучит дольше всего. Можно выбрать до двух нот."},
+      {key:"top",    pool:TOP_NOTES,    max:3, layer:"старт",
+       label:"Шаг 4 из 4 · Старт", title:"Верхние ноты — первое впечатление",
+       intro:"Старт — это первые минуты аромата, его «приветствие». Можно выбрать до трёх нот."}
+    ];
+
+    var stepIndex = 0;
+    var selected = [];           // selected note names in current step
+    var chosen = [];             // [{name, data, layer}] accumulated across steps
+    var chosenLine = null;       // "m" | "f" | "u" — выбранная линия аромата
+    var inLineStep = true;       // показываем ли экран выбора линии
+    // Отфильтрованный под линию набор нот для текущего шага.
+    function stepPool(step) { return chosenLine ? poolForLine(step.pool, chosenLine) : step.pool; }
+
+    var grid = document.getElementById('notesGrid');
+    var recoHint = document.getElementById('recoHint');
+    var feedback = document.getElementById('feedback');
+    var counter = document.getElementById('counter');
+    var nextBtn = document.getElementById('nextBtn');
+    var stepBackBtn = document.getElementById('stepBackBtn');
+    var nextLabel = document.getElementById('nextLabel');
+    var preselect = null;   // notes to restore as selected when re-entering a step
+    var stepLabel = document.getElementById('stepLabel');
+    var stepTitle = document.getElementById('stepTitle');
+    var stepIntro = document.getElementById('stepIntro');
+    var actionsWrap = document.getElementById('actionsWrap');
+    var resultBox = document.getElementById('result');
+    var recipeEmpty = document.getElementById('recipeEmpty');
+    var recipeList = document.getElementById('recipeList');
+    var flaconStill = document.getElementById('flaconStill');
+    var flaconVideo = document.getElementById('flaconVideo');
+
+    // Play the flacon animation once (a "drop" falls in) — every time a note is tapped.
+    var animBusy = false;
+    function playFlacon() {
+      if (!flaconVideo) return;
+      flaconStill.style.opacity = 0;
+      flaconVideo.classList.add('is-on');
+      try {
+        flaconVideo.currentTime = 0;
+        var p = flaconVideo.play();
+        if (p && p.catch) p.catch(function(){});
+      } catch (e) {}
+    }
+    if (flaconVideo) {
+      flaconVideo.addEventListener('ended', function () {
+        // Hold the last (filled) frame; keep video visible so the bottle stays "full".
+        flaconVideo.pause();
+      });
+    }
+
+    function updateRecipe() {
+      if (!chosen.length && !selected.length) {
+        recipeEmpty.hidden = false; recipeList.hidden = true; return;
+      }
+      recipeEmpty.hidden = true; recipeList.hidden = false;
+      var html = '';
+      var layers = {"база":[], "сердце":[], "старт":[]};
+      chosen.forEach(function(c){ layers[c.layer].push(c.name); });
+      // include current step's live selection
+      var curLayer = STEPS[stepIndex].layer;
+      selected.forEach(function(n){ if(layers[curLayer].indexOf(n)<0) layers[curLayer].push(n+'…'); });
+      ["база","сердце","старт"].forEach(function(L){
+        if (layers[L].length) {
+          html += '<li><span class="recipe-layer">'+L+'</span><span class="recipe-notes">'+layers[L].join(', ')+'</span></li>';
+        }
+      });
+      recipeList.innerHTML = html;
+    }
+
+    function makeStars(pos) { // pos 0,1,2 -> ★★★, ★★, ★
+      var n = 3 - Math.min(pos, 2);
+      var s = '';
+      for (var i=0;i<n;i++) s += '★';
+      return s;
+    }
+
+    // Шаг 0 — выбор линии аромата (мужская / женская / унисекс).
+    function renderLineStep() {
+      inLineStep = true;
+      selected = [];
+      feedback.hidden = true; feedback.innerHTML = '';
+      recoHint.hidden = true;
+      stepLabel.textContent = 'Шаг 1 из 4 · Линия';
+      stepTitle.textContent = 'Выберите линию аромата';
+      stepIntro.innerHTML = 'С какого характера начнём? От этого зависит, какие ноты мы покажем на следующих шагах. Унисекс-ноты подходят всем и есть в любой линии.';
+      grid.hidden = false;
+      grid.innerHTML = '';
+      grid.classList.add('lines-grid');
+      ['m','f','u'].forEach(function(code){
+        var L = LINES[code];
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'line-card line-card--' + code;
+        card.dataset.line = code;
+        card.dataset.testid = 'line-card-' + code;
+        if (chosenLine === code) card.classList.add('is-selected');
+        card.innerHTML =
+          '<span class="line-card__title">' + L.title + '</span>' +
+          '<span class="line-card__tag">' + L.tagline + '</span>' +
+          '<span class="line-card__info" role="button" tabindex="0" data-line-info="' + code + '" data-testid="line-info-' + code + '" aria-label="Подробнее о линии: ' + L.title + '" title="Что это за линия?">?</span>';
+        card.querySelector('.line-card__info').addEventListener('click', function(ev){ ev.stopPropagation(); openLineInfo(code); });
+        card.querySelector('.line-card__info').addEventListener('keydown', function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); ev.stopPropagation(); openLineInfo(code);} });
+        card.addEventListener('click', function(){ chooseLine(code); });
+        grid.appendChild(card);
+      });
+      if (stepBackBtn) stepBackBtn.hidden = true;
+      counter.textContent = '';
+      nextBtn.disabled = (chosenLine === null);
+      nextLabel.textContent = 'Продолжить';
+    }
+
+    function chooseLine(code) {
+      chosenLine = code;
+      Array.prototype.forEach.call(grid.querySelectorAll('.line-card'), function(c){
+        c.classList.toggle('is-selected', c.dataset.line === code);
+      });
+      nextBtn.disabled = false;
+    }
+
+    function renderStep() {
+      inLineStep = false;
+      grid.classList.remove('lines-grid');
+      var step = STEPS[stepIndex];
+      var pool = stepPool(step);
+      // selected may be pre-filled (e.g. when stepping back to re-edit a layer)
+      selected = (preselect && preselect.length) ? preselect.slice() : [];
+      preselect = null;
+      feedback.hidden = true;
+      feedback.innerHTML = '';
+      stepLabel.textContent = step.label;
+      stepTitle.textContent = step.title;
+      stepIntro.innerHTML = step.intro;
+
+      // recommendations based on already-chosen families
+      var ranked = [];
+      if (chosen.length) {
+        var fams = chosen.map(function(c){return c.data.family;});
+        ranked = rankCandidates(fams, pool, step.max === 1 ? 2 : step.max, chosenLine);
+        var names = ranked.map(function(r){return r.name;});
+        recoHint.hidden = false;
+        recoHint.innerHTML = '💡 К уже выбранному лучше всего подойдут: <strong>' + names.join(', ') + '</strong> (отмечены ★).';
+      } else {
+        recoHint.hidden = true;
+      }
+      var rankedNames = ranked.map(function(r){return r.name;});
+
+      // build grid
+      grid.innerHTML = '';
+      Object.keys(pool).forEach(function(name){
+        var d = pool[name];
+        var card = document.createElement('div');
+        card.className = 'note-card';
+        card.setAttribute('role','option');
+        card.tabIndex = 0;
+        card.setAttribute('aria-selected', selected.indexOf(name) > -1 ? 'true' : 'false');
+        card.dataset.name = name;
+        card.dataset.testid = 'note-card-' + d.slug;
+        var star = '';
+        var pos = rankedNames.indexOf(name);
+        if (pos > -1) star = '<span class="note-card__star" title="рекомендуем">'+makeStars(pos)+'</span>';
+        card.innerHTML =
+          '<span class="note-card__img"><img src="assets/notes/'+d.slug+'.jpg" alt="'+name+'" loading="lazy" onerror="this.closest(\'.note-card__img\').classList.add(\'is-fallback\');this.remove();" /></span>' +
+          star +
+          '<button type="button" class="note-info-btn" data-note="'+name+'" data-testid="note-info-'+d.slug+'" aria-label="Подсказка: с чем сочетать ноту «'+name+'»" title="С чем сочетать?">?</button>' +
+          '<span class="note-card__name">'+name+'</span>' +
+          '<span class="note-card__desc">'+d.desc+'</span>';
+        if (selected.indexOf(name) > -1) card.classList.add('is-selected');
+        card.addEventListener('click', function(ev){
+          if (ev.target.closest('.note-info-btn')) return; // info button handled separately
+          toggleNote(name, card);
+        });
+        card.addEventListener('keydown', function(ev){
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            if (ev.target.closest('.note-info-btn')) return;
+            ev.preventDefault(); toggleNote(name, card);
+          }
+        });
+        card.querySelector('.note-info-btn').addEventListener('click', function(ev){
+          ev.stopPropagation();
+          openNoteInfo(name, d);
+        });
+        grid.appendChild(card);
+      });
+
+      // back button: visible on every selection step (с базы можно вернуться к выбору линии)
+      if (stepBackBtn) stepBackBtn.hidden = false;
+
+      updateCounter();
+      nextLabel.textContent = (stepIndex === STEPS.length - 1) ? 'Собрать аромат' : 'Продолжить';
+      updateRecipe();
+      renderFeedback();  // show verdicts for any pre-selected notes (e.g. after going back)
+    }
+
+    function toggleNote(name, card) {
+      var step = STEPS[stepIndex];
+      var idx = selected.indexOf(name);
+      if (idx > -1) {
+        selected.splice(idx, 1);
+        card.classList.remove('is-selected');
+        card.setAttribute('aria-selected', 'false');
+      } else {
+        if (selected.length >= step.max) {
+          if (step.max === 1) {
+            // single-select: replace
+            selected = [];
+            Array.prototype.forEach.call(grid.querySelectorAll('.note-card.is-selected'), function(c){ c.classList.remove('is-selected'); c.setAttribute('aria-selected','false'); });
+          } else {
+            // limit reached: gentle nudge
+            counter.classList.add('shake');
+            setTimeout(function(){ counter.classList.remove('shake'); }, 450);
+            return;
+          }
+        }
+        selected.push(name);
+        card.classList.add('is-selected');
+        card.setAttribute('aria-selected', 'true');
+        // The flacon animation plays on every pick
+        playFlacon();
+      }
+      updateCounter();
+      updateRecipe();
+      renderFeedback();   // instant feedback on every tap
+    }
+
+    // Build the verdict for one note (used live + on commit)
+    function noteVerdictHtml(name, d) {
+      var chosenFams = chosen.map(function(c){return c.data.family;});
+      if (chosenFams.length) {
+        var ex = explainChoice(name, d, chosenFams);
+        return '<p class="fb-item__text fb-'+ex.verdict+'">' + ex.text + '</p>';
+      }
+      var prof = profileForNote(name, d);
+      return '<p class="fb-item__text fb-good">Хорошая основа. Это ' + prof.about +
+        '. Чем хороша: ' + prof.good + '. Слабую сторону («' + prof.weak + '») поправим следующими нотами.</p>';
+    }
+
+    // Live feedback for whatever is selected right now in this step
+    function renderFeedback() {
+      var step = STEPS[stepIndex];
+      var pool = stepPool(step);
+      if (!selected.length) { feedback.hidden = true; feedback.innerHTML = ''; return; }
+      var fbHtml = '';
+      selected.forEach(function(name){
+        var d = pool[name];
+        fbHtml += '<div class="fb-item"><span class="fb-item__name">'+name+'</span>'+noteVerdictHtml(name, d)+'</div>';
+      });
+      feedback.innerHTML = fbHtml;
+      feedback.hidden = false;
+    }
+
+    function updateCounter() {
+      var step = STEPS[stepIndex];
+      counter.textContent = 'Выбрано: ' + selected.length + ' из ' + step.max +
+        (step.max === 1 ? ' (нужна одна нота)' : ' (можно меньше)');
+      nextBtn.disabled = selected.length === 0;
+    }
+
+    function commitStep() {
+      var step = STEPS[stepIndex];
+      var pool = stepPool(step);
+      selected.forEach(function(name){
+        var d = pool[name];
+        chosen.push({name:name, data:d, layer:step.layer});
+      });
+    }
+
+    nextBtn.addEventListener('click', function () {
+      // Шаг 0 — выбор линии: переходим к выбору нот (база), индекс остаётся 0
+      if (inLineStep) {
+        if (chosenLine === null) return;
+        renderStep();
+        window.scrollTo(0, 0);
+        return;
+      }
+      if (!selected.length) return;
+      commitStep();
+      updateRecipe();
+      if (stepIndex < STEPS.length - 1) {
+        stepIndex++;
+        renderStep();
+        window.scrollTo(0, 0);   // each step starts cleanly at the top, no mid-page drift
+      } else {
+        buildFinalReport();
+        window.scrollTo(0, 0);
+      }
+    });
+
+    // "Назад" inside the builder: go to the previous selection step and restore its picks.
+    if (stepBackBtn) {
+      stepBackBtn.addEventListener('click', function () {
+        // с шага «База» возвращаемся к выбору линии
+        if (stepIndex === 0) { renderLineStep(); window.scrollTo(0, 0); return; }
+        stepIndex--;
+        var prevLayer = STEPS[stepIndex].layer;
+        // pull this layer's notes back out of the committed recipe so they can be re-edited
+        var restored = [];
+        chosen = chosen.filter(function (c) {
+          if (c.layer === prevLayer) { restored.push(c.name); return false; }
+          return true;
+        });
+        preselect = restored;
+        renderStep();
+        window.scrollTo(0, 0);
+      });
+    }
+
+    // ============================================================
+    //  FINAL REPORT
+    // ============================================================
+    function buildFinalReport() {
+      // hide builder UI
+      grid.hidden = true;
+      recoHint.hidden = true;
+      actionsWrap.hidden = true;
+      feedback.hidden = true;
+
+      var notesData = chosen.map(function(c){return c.data;});
+      var layers = {"база":[], "сердце":[], "старт":[]};
+      chosen.forEach(function(c){ layers[c.layer].push(c.name); });
+
+      var moods = describeBlend(notesData);
+      var occasion = suggestOccasion(notesData);
+      var similar = similarTo(notesData);
+      var longevity = estimateLongevity(notesData);
+
+      var strengths=[], seen={};
+      notesData.forEach(function(n){ var g=FAMILY_PROFILE[n.family].good; if(!seen[g]){strengths.push(g); seen[g]=1;} });
+      var weakBase = FAMILY_PROFILE[notesData[0].family].weak;
+
+      var compHtml = '';
+      ["база","сердце","старт"].forEach(function(L){
+        if (layers[L].length) compHtml += '<li><span class="recipe-layer">'+L+'</span><span class="recipe-notes">'+layers[L].join(', ')+'</span></li>';
+      });
+
+      stepLabel.textContent = 'Готово ✦';
+      stepTitle.textContent = 'Ваш аромат собран';
+      stepIntro.innerHTML = 'Вот композиция, которую вы создали. Мы подготовим для вас <strong>набор для создания этого флакона</strong> — все подобранные ноты, основу и инструкцию, чтобы вы собрали свой аромат своими руками.';
+
+      resultBox.innerHTML =
+        '<div class="result-card">' +
+          '<h3 class="result-card__title">Состав</h3>' +
+          '<ul class="recipe-final">' + compHtml + '</ul>' +
+          '<dl class="result-facts">' +
+            '<div><dt>Как звучит</dt><dd>аромат ' + moods.join(', ') + '.</dd></div>' +
+            '<div><dt>Куда носить</dt><dd>' + occasion + '</dd></div>' +
+            '<div><dt>На что похож</dt><dd>' + similar + '.</dd></div>' +
+            '<div><dt>Стойкость</dt><dd>' + longevity + '.</dd></div>' +
+            '<div><dt>Чем хорош</dt><dd>' + strengths.join('; ') + '.</dd></div>' +
+            '<div><dt>На что обратить внимание</dt><dd>' + weakBase + '.</dd></div>' +
+          '</dl>' +
+          '<p class="result-note">Пропорции, способ смешивания и все остальные рекомендации вы найдёте в посылке с набором.</p>' +
+          '<div class="result-cta">' +
+            '<p class="result-cta__text">Хотите получить набор для создания этого аромата? Напишите нам — соберём его специально для вас, и вы создадите свой флакон своими руками.</p>' +
+            '<a class="btn" href="mailto:oksikbychenko@yandex.ru?subject=Мой%20аромат%20—%20хочу%20набор%20для%20создания&body=' +
+              encodeURIComponent('Здравствуйте! Я собрал(а) свой аромат:\n\nБаза: ' + layers["база"].join(', ') +
+              '\nСердце: ' + layers["сердце"].join(', ') + '\nСтарт: ' + layers["старт"].join(', ') +
+              '\n\nХочу получить набор для создания этого флакона своими руками.') + '">' +
+              '<span>Заказать набор</span>' +
+              '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</a>' +
+          '</div>' +
+          '<div class="flow-nav">' +
+            '<button type="button" class="flow-nav__btn" id="restartBtn">' +
+              '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M14 9a5 5 0 1 1-1.5-3.5M13 3v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '<span>Собрать заново</span>' +
+            '</button>' +
+            '<button type="button" class="flow-nav__btn" id="backBtn">' +
+              '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 9H3M8 4L3 9l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '<span>Назад</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      resultBox.hidden = false;
+
+      document.getElementById('restartBtn').addEventListener('click', function () {
+        stepIndex = 0; selected = []; chosen = [];
+        chosenLine = null; inLineStep = true;
+        resultBox.hidden = true; resultBox.innerHTML='';
+        grid.hidden = false; actionsWrap.hidden = false;
+        flaconVideo.classList.remove('is-on'); flaconStill.style.opacity = 1;
+        renderLineStep();
+      });
+      document.getElementById('backBtn').addEventListener('click', function () {
+        if (history.length > 1) { history.back(); } else { location.href = 'index.html'; }
+      });
+
+      updateRecipe();
+    }
+
+    // ============================================================
+    //  INFO MODAL — гид по сочетаниям
+    // ============================================================
+    var infoModal = document.getElementById('infoModal');
+    var infoDialog = infoModal.querySelector('.info-modal__dialog');
+    var infoEyebrow = document.getElementById('infoModalEyebrow');
+    var infoTitle = document.getElementById('infoModalTitle');
+    var infoBody = document.getElementById('infoModalBody');
+    var lastFocused = null;
+
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function famChips(codes){
+      if (!codes || !codes.length) return '<span class="info-chip info-chip--none">—</span>';
+      return codes.map(function(c){ return '<span class="info-chip">'+esc(FAMILY_NAME_RU[c]||c)+'</span>'; }).join('');
+    }
+
+    function familyRuleBlock(fam){
+      var r = FAMILY_RULES[fam]; if (!r) return '';
+      var prof = FAMILY_PROFILE[fam] || {};
+      return '<section class="info-sec">' +
+        '<h3 class="info-sec__h">Общее правило для семейства «' + esc(FAMILY_NAME_RU[fam]||fam) + '»</h3>' +
+        '<p class="info-sec__p">' + esc(prof.about || '') + '.</p>' +
+        '<div class="info-pair"><span class="info-pair__l info-pair__l--good">Дружит с</span><span class="info-pair__r">' + famChips(r.loves) + '</span></div>' +
+        '<div class="info-pair"><span class="info-pair__l info-pair__l--warn">Осторожно с</span><span class="info-pair__r">' + famChips(r.careful) + '</span></div>' +
+        '<p class="info-tip">' + esc(r.tip) + '</p>' +
+      '</section>';
+    }
+
+    function openModal(){
+      lastFocused = document.activeElement;
+      infoModal.hidden = false;
+      document.body.classList.add('modal-open');
+      requestAnimationFrame(function(){ infoModal.classList.add('is-open'); infoDialog.focus(); });
+    }
+    function closeModal(){
+      infoModal.classList.remove('is-open');
+      document.body.classList.remove('modal-open');
+      window.setTimeout(function(){ infoModal.hidden = true; }, 220);
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    function openNoteInfo(name, d){
+      var t = noteTip(name);
+      var html = '';
+      html += '<p class="info-lead">' + esc(d.desc) + '. <span class="info-lead__fam">Семейство: ' + esc(FAMILY_NAME_RU[d.family]||d.family) + '.</span></p>';
+      var facets = [];
+      if (d.sweet) facets.push('<span class="info-facet info-facet--sweet">сладость '+'●'.repeat(d.sweet)+'</span>');
+      if (d.tart)  facets.push('<span class="info-facet info-facet--tart">терпкость '+'●'.repeat(d.tart)+'</span>');
+      if (facets.length) html += '<p class="info-facets">' + facets.join('') + '</p>';
+      if (t) {
+        html += '<section class="info-sec">' +
+          '<h3 class="info-sec__h">Частная рекомендация по ноте</h3>' +
+          '<p class="info-sec__p">' + esc(t.note) + '</p>' +
+          '<div class="info-pair"><span class="info-pair__l info-pair__l--good">Лучшие пары</span><span class="info-pair__r info-pair__r--text">' + esc(t.love) + '</span></div>' +
+          '<div class="info-pair"><span class="info-pair__l info-pair__l--warn">Чего избегать</span><span class="info-pair__r info-pair__r--text">' + esc(t.avoid) + '</span></div>' +
+        '</section>';
+      }
+      html += familyRuleBlock(d.family);
+      infoEyebrow.textContent = 'Подсказка по ноте';
+      infoTitle.textContent = name;
+      infoBody.innerHTML = html;
+      openModal();
+    }
+
+    function openLineInfo(code){
+      var L = LINES[code];
+      var desc = {
+        m:'Мужская линия строится на древесных, пряных и свежих аккордах — но теперь в неё добавлена тёплая съедобная сладость (тонка, какао, табак, мёд), чтобы аромат звучал богато и притягательно, оставаясь мужественным.',
+        f:'Женская линия — это цветы и пудра, но с новой терпкой дерзкой гранью: полынь, чёрный чай, ревень и ирис добавляют сухости и характера, уводя композицию от приторности.',
+        u:'Унисекс — намеренно широкая линия. Здесь открыты все ноты сразу: можно свободно смешивать мужское и женское, тёплое и холодное, сладкое и терпкое, и искать смелые кросс-семейные созвучия.'
+      };
+      var html = '<p class="info-lead">' + esc(desc[code]) + '</p>';
+      if (code === 'u') {
+        html += '<section class="info-sec"><h3 class="info-sec__h">Широкие сочетания для унисекс</h3>' +
+          '<ul class="info-list">' +
+          '<li>Цитрус + дерево + лёгкая амбра — чистая универсальная классика.</li>' +
+          '<li>Роза + пачули + специи — дерзкий «розовый уд» без гендера.</li>' +
+          '<li>Зелёный/чёрный чай + мускус + ваниль — спокойный «кожный» уют.</li>' +
+          '<li>Ревень + ирис + кедр — терпко-пудровый минимализм.</li>' +
+          '<li>Тонка + лаванда + бергамот — сладко-свежая фужерная база для всех.</li>' +
+          '</ul></section>';
+      }
+      infoEyebrow.textContent = 'О линии аромата';
+      infoTitle.textContent = L.title;
+      infoBody.innerHTML = html;
+      openModal();
+    }
+
+    function openGuide(){
+      var html = '';
+      html += '<p class="info-lead">Аромат собирается в три слоя: <strong>база</strong> (фундамент и шлейф), <strong>сердце</strong> (душа) и <strong>старт</strong> (первое впечатление). Ноты сочетаются по «температуре» и характеру — ниже общие правила по семействам.</p>';
+      html += '<section class="info-sec"><h3 class="info-sec__h">Главные принципы</h3><ul class="info-list">' +
+        '<li><strong>Тёплое к тёплому, свежее к свежему.</strong> Сладкие гурманы и амбра дружат со специями и цветами; цитрус и зелень — с травами и деревом.</li>' +
+        '<li><strong>База держит, старт украшает.</strong> Лёгкому цитрусовому старту обязательно нужна стойкая база (дерево, амбра, мускус).</li>' +
+        '<li><strong>Баланс граней.</strong> Капля сладости смягчает брутальную базу, а щепотка терпкости спасает цветок от приторности.</li>' +
+        '<li><strong>Контраст — на свой страх.</strong> Зелень против плотной сладости звучит смело: может стать находкой, а может «спорить».</li>' +
+        '</ul></section>';
+      html += '<section class="info-sec"><h3 class="info-sec__h">Шпаргалка по семействам</h3><div class="info-table">';
+      ['gourmand','amber','woody','spicy','floral','powdery','musky','earthy','citrus','green','aromatic','fruity'].forEach(function(fam){
+        var r = FAMILY_RULES[fam]; if(!r) return;
+        html += '<div class="info-row">' +
+          '<div class="info-row__fam">' + esc(FAMILY_NAME_RU[fam]) + '</div>' +
+          '<div class="info-row__loves"><span class="info-row__lbl">дружит:</span> ' + (r.loves.map(function(c){return esc(FAMILY_NAME_RU[c]);}).join(', ')||'—') + '</div>' +
+          '<div class="info-row__careful"><span class="info-row__lbl">осторожно:</span> ' + (r.careful.map(function(c){return esc(FAMILY_NAME_RU[c]);}).join(', ')||'—') + '</div>' +
+        '</div>';
+      });
+      html += '</div></section>';
+      infoEyebrow.textContent = 'Гид по сочетаниям';
+      infoTitle.textContent = 'Что с чем смешивать';
+      infoBody.innerHTML = html;
+      openModal();
+    }
+
+    document.getElementById('guideBtn').addEventListener('click', openGuide);
+    Array.prototype.forEach.call(infoModal.querySelectorAll('[data-info-close]'), function(el){
+      el.addEventListener('click', closeModal);
+    });
+    document.addEventListener('keydown', function(ev){
+      if (infoModal.hidden) return;
+      if (ev.key === 'Escape') { closeModal(); return; }
+      if (ev.key === 'Tab') {
+        var f = infoDialog.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+        if (!f.length) return;
+        var first = f[0], last = f[f.length-1];
+        if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+        else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+      }
+    });
+
+    // preload note images for snappier grid
+    Object.keys(BASE_NOTES).concat(Object.keys(MIDDLE_NOTES), Object.keys(TOP_NOTES)).forEach(function(){});
+
+    // header "Назад": return to the previous page (or home if opened directly)
+    var headerBackBtn = document.getElementById('headerBackBtn');
+    if (headerBackBtn) {
+      headerBackBtn.addEventListener('click', function () {
+        if (history.length > 1) { history.back(); } else { location.href = 'index.html'; }
+      });
+    }
+
+    // start
+    renderLineStep();
+  })();
+  </script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>

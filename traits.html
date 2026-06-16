@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Аромат жизни — какие черты вас характеризуют</title>
+  <meta name="description" content="Выберите до трёх черт, которые характеризуют вас сейчас — на их основе мы поможем собрать подходящий вам аромат." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="stylesheet" href="style.css?v=1781556944" />
+</head>
+<body class="page-paths">
+  <!-- Starry background -->
+  <div class="bg bg--stars" aria-hidden="true">
+    <div class="bg__veil bg__veil--stars"></div>
+  </div>
+
+  <!-- Header / Nav -->
+  <header class="header">
+    <a href="index.html" class="brand" aria-label="Аромат жизни — на главную">
+      <img class="brand__logo" src="assets/logo.png" alt="Аромат жизни" />
+      <span class="brand__name">Аромат жизни</span>
+    </a>
+
+    <a href="tests.html" class="back-link">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M15 9H4M8.5 4l-5 5 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Назад</span>
+    </a>
+  </header>
+
+  <!-- Traits content -->
+  <main class="section section--traits-page">
+    <div class="traits-layout reveal">
+      <p class="section__label">Шаг к аромату</p>
+      <h1 class="section__title">Как вы видите себя<br />после теста?</h1>
+      <p class="prose prose--lead">
+        Выберите до трёх прилагательных, которые, по вашему мнению, теперь
+        характеризуют вас — и опираясь на которые вы хотели бы собрать
+        подходящий вам аромат. Этот выбор можно будет в любой момент поправить.
+      </p>
+
+      <!-- Multi-select -->
+      <div class="traits-picker" id="picker">
+        <label class="traits-picker__label" for="traitSearch">Ваши черты <span>(до 3)</span></label>
+
+        <div class="select" id="select">
+          <div class="select__control" id="control">
+            <div class="select__chips" id="chips"></div>
+            <input
+              type="text"
+              id="traitSearch"
+              class="select__input"
+              placeholder="Начните вводить или выберите из списка…"
+              autocomplete="off"
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="dropdown"
+            />
+            <svg class="select__caret" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M4 7l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="select__dropdown" id="dropdown" role="listbox"></div>
+        </div>
+
+        <p class="traits-picker__hint" id="hint">Можно выбрать от одной до трёх черт. Своё слово — введите и нажмите Enter.</p>
+      </div>
+
+      <div class="traits-actions">
+        <button class="btn" id="saveBtn" disabled>
+          <span>Сохранить</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M3 9.5l4 4 8-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="traits-saved" id="savedMsg" hidden>Выбор сохранён ✦ он отображается вверху страницы</span>
+      </div>
+
+      <!-- Where to go next (shown after save) -->
+      <div class="flow-nav" id="flowNav" hidden>
+        <a class="flow-nav__btn" href="tests.html">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M15 9H3M8 4L3 9l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Вернуться к познанию себя</span>
+        </a>
+        <a class="flow-nav__btn flow-nav__btn--primary" href="create.html">
+          <span>Перейти к созданию аромата</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js?v=1781556944"></script>
+  <script>
+  (function () {
+    // 25 character traits in separate masculine / feminine lists.
+    // The list shown depends on the gender chosen in the ОЧХ-20 test.
+    const TRAITS_M = [
+      'красивый', 'нежный', 'сильный', 'чувственный', 'загадочный',
+      'свободный', 'тёплый', 'уверенный', 'мечтательный', 'страстный',
+      'спокойный', 'игривый', 'утончённый', 'смелый', 'искренний',
+      'вдохновляющий', 'романтичный', 'озорной', 'мудрый', 'лёгкий',
+      'глубокий', 'яркий', 'независимый', 'добрый', 'элегантный'
+    ];
+    const TRAITS_F = [
+      'красивая', 'нежная', 'сильная', 'чувственная', 'загадочная',
+      'свободная', 'тёплая', 'уверенная', 'мечтательная', 'страстная',
+      'спокойная', 'игривая', 'утончённая', 'смелая', 'искренняя',
+      'вдохновляющая', 'романтичная', 'озорная', 'мудрая', 'лёгкая',
+      'глубокая', 'яркая', 'независимая', 'добрая', 'элегантная'
+    ];
+    // Determine gender: URL ?g= takes priority (passed from the test), then the saved cookie.
+    let gender = '';
+    try {
+      const urlG = new URLSearchParams(window.location.search).get('g');
+      if (urlG === 'm' || urlG === 'f') {
+        gender = urlG;
+        // Persist so the badge and other pages stay consistent
+        if (window.AromaStore && window.AromaStore.writeGender) window.AromaStore.writeGender(gender);
+      }
+    } catch (e) {}
+    if (!gender && window.AromaStore && window.AromaStore.readGender) {
+      gender = window.AromaStore.readGender();
+    }
+    const TRAITS = gender === 'm' ? TRAITS_M : TRAITS_F;
+    const MAX = 3;
+
+    const control = document.getElementById('control');
+    const input = document.getElementById('traitSearch');
+    const dropdown = document.getElementById('dropdown');
+    const chipsBox = document.getElementById('chips');
+    const saveBtn = document.getElementById('saveBtn');
+    const savedMsg = document.getElementById('savedMsg');
+    const hint = document.getElementById('hint');
+    const selectEl = document.getElementById('select');
+
+    // Preload any previously saved selection from the shared store
+    let selected = [];
+    try {
+      selected = (window.AromaStore ? window.AromaStore.read() : []).slice(0, MAX);
+    } catch (e) { selected = []; }
+
+    function isFull() { return selected.length >= MAX; }
+
+    function renderChips() {
+      chipsBox.innerHTML = '';
+      selected.forEach((t) => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = `<span>${t}</span>`;
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'chip__x';
+        x.setAttribute('aria-label', 'Убрать ' + t);
+        x.innerHTML = '&times;';
+        x.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          selected = selected.filter((s) => s !== t);
+          afterChange();
+        });
+        chip.appendChild(x);
+        chipsBox.appendChild(chip);
+      });
+      input.style.display = isFull() ? 'none' : '';
+      input.placeholder = selected.length ? '' : 'Начните вводить или выберите из списка…';
+    }
+
+    function addTrait(t) {
+      t = t.trim().toLowerCase();
+      if (!t) return;
+      if (selected.includes(t)) return;
+      if (isFull()) return;
+      selected.push(t);
+      input.value = '';
+      afterChange();
+    }
+
+    function renderDropdown() {
+      const q = input.value.trim().toLowerCase();
+      dropdown.innerHTML = '';
+
+      const matches = TRAITS.filter(
+        (t) => !selected.includes(t) && t.includes(q)
+      );
+
+      if (isFull()) {
+        const note = document.createElement('div');
+        note.className = 'select__note';
+        note.textContent = 'Выбрано максимум 3 черты — уберите одну, чтобы добавить другую.';
+        dropdown.appendChild(note);
+        return;
+      }
+
+      matches.forEach((t) => {
+        const opt = document.createElement('div');
+        opt.className = 'select__option';
+        opt.setAttribute('role', 'option');
+        opt.textContent = t;
+        opt.addEventListener('mousedown', (ev) => {
+          ev.preventDefault();
+          addTrait(t);
+        });
+        dropdown.appendChild(opt);
+      });
+
+      // Allow adding a custom word that isn't in the list
+      if (q && !TRAITS.includes(q) && !selected.includes(q)) {
+        const custom = document.createElement('div');
+        custom.className = 'select__option select__option--custom';
+        custom.setAttribute('role', 'option');
+        custom.innerHTML = `Добавить своё: <strong>«${q}»</strong>`;
+        custom.addEventListener('mousedown', (ev) => {
+          ev.preventDefault();
+          addTrait(q);
+        });
+        dropdown.appendChild(custom);
+      }
+
+      if (!dropdown.children.length) {
+        const empty = document.createElement('div');
+        empty.className = 'select__note';
+        empty.textContent = 'Ничего не найдено';
+        dropdown.appendChild(empty);
+      }
+    }
+
+    function openDropdown() {
+      selectEl.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+      renderDropdown();
+    }
+    function closeDropdown() {
+      selectEl.classList.remove('open');
+      input.setAttribute('aria-expanded', 'false');
+    }
+
+    // Persist the current selection + refresh the top badge instantly
+    function persist() {
+      if (window.AromaStore && window.AromaStore.write) window.AromaStore.write(selected);
+      if (window.AromaTraits && typeof window.AromaTraits.refresh === 'function') {
+        window.AromaTraits.refresh();
+      }
+    }
+
+    function afterChange() {
+      renderChips();
+      renderDropdown();
+      saveBtn.disabled = selected.length === 0;
+      savedMsg.hidden = true;
+      // Auto-save on every change so the badge appears even without pressing Сохранить
+      persist();
+      if (!isFull()) input.focus();
+    }
+
+    control.addEventListener('click', () => {
+      if (!isFull()) { input.focus(); }
+      openDropdown();
+    });
+    input.addEventListener('focus', openDropdown);
+    input.addEventListener('input', () => { openDropdown(); });
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        const q = input.value.trim().toLowerCase();
+        if (q) addTrait(q);
+      } else if (ev.key === 'Backspace' && !input.value && selected.length) {
+        selected.pop();
+        afterChange();
+      }
+    });
+
+    document.addEventListener('click', (ev) => {
+      if (!selectEl.contains(ev.target)) closeDropdown();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      if (!selected.length) return;
+      if (window.AromaStore) window.AromaStore.write(selected);
+      savedMsg.hidden = false;
+      // Reveal the «where to next» navigation
+      var flowNav = document.getElementById('flowNav');
+      if (flowNav) {
+        flowNav.hidden = false;
+        void flowNav.offsetWidth;
+        flowNav.classList.add('is-in');
+      }
+      // Refresh the persistent badge if the shared helper is present
+      if (window.AromaTraits && typeof window.AromaTraits.refresh === 'function') {
+        window.AromaTraits.refresh();
+      }
+    });
+
+    // Tailor the hint to the gender shown in the list
+    function updateHint() {
+      if (gender === 'm') {
+        hint.innerHTML = 'Список показан в мужском роде. Можно выбрать от одной до трёх черт. Своё слово — введите и нажмите Enter.';
+      } else {
+        hint.innerHTML = 'Список показан в женском роде. Можно выбрать от одной до трёх черт. Своё слово — введите и нажмите Enter.';
+      }
+    }
+
+    // init
+    updateHint();
+    renderChips();
+    saveBtn.disabled = selected.length === 0;
+  })();
+  </script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>

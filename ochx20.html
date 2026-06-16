@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Опросник черт характера, ОЧХ-20 — пройти тест онлайн</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+
+<style>
+  :root{
+    --navy-900:#0a1428;
+    --navy-800:#0e1c38;
+    --gold:#d8b46a;
+    --gold-bright:#ecd49a;
+    --cream:#f3ecdd;
+    --muted:#9aa6bd;
+    --line:rgba(216,180,106,0.2);
+    --line-soft:rgba(154,166,189,0.18);
+    --card:rgba(8,17,36,0.62);
+    --green:#7bbf8a;
+    --amber:#e0b96a;
+    --red:#d98b8b;
+    --shadow:0 18px 44px rgba(0,0,0,.42);
+    --ease:cubic-bezier(0.22,1,0.36,1);
+    --font-display:'Cormorant Garamond','Georgia',serif;
+    --font-body:'Switzer','Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:var(--font-body);
+    color:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased;
+    min-height:100vh;overflow-x:hidden;background:var(--navy-900);
+  }
+  /* Starry background */
+  .bg{position:fixed;inset:0;z-index:-2;
+    background:url('assets/bg-stars-2.png') center/cover no-repeat fixed;
+    filter:brightness(1.35) contrast(1.12) saturate(1.08);}
+  .bg__veil{position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(180deg,rgba(8,17,36,0.5) 0%,rgba(8,17,36,0.38) 40%,rgba(8,17,36,0.6) 100%);}
+
+  /* Header */
+  .header{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;
+    justify-content:space-between;padding:1.4rem clamp(1.5rem,5vw,4rem);}
+  .brand{display:flex;align-items:center;gap:0.7rem;text-decoration:none;color:var(--gold);}
+  .brand__logo{height:42px;width:auto;flex-shrink:0;}
+  .brand__name{font-family:var(--font-display);font-size:1.45rem;letter-spacing:0.04em;color:var(--cream);}
+  .back-link{display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--muted);
+    font-size:0.78rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;transition:color .35s var(--ease);}
+  .back-link:hover{color:var(--gold-bright);}
+  .back-link svg{transition:transform .35s var(--ease);}
+  .back-link:hover svg{transform:translateX(-3px);}
+
+  .wrap{max-width:780px;margin:0 auto;padding:7.5rem 18px 80px}
+  header.top{text-align:center;padding:8px 0 8px}
+  header.top h1{font-family:var(--font-display);font-weight:500;font-size:34px;margin:0 0 8px;letter-spacing:-.2px;color:var(--cream)}
+  header.top .sub{color:var(--muted);font-size:15px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:26px;box-shadow:var(--shadow);margin-top:20px;backdrop-filter:blur(4px);
+  }
+  .instr h2{font-family:var(--font-display);font-weight:500;font-size:22px;margin:0 0 10px;color:var(--cream)}
+  .instr p{color:var(--cream);opacity:.9;font-size:15px;margin:8px 0}
+  .meta{font-size:13px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--line-soft);padding-top:12px}
+  .gender{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+  .gender label{
+    flex:1;min-width:130px;display:flex;align-items:center;justify-content:center;gap:8px;
+    border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;font-weight:600;
+    transition:.15s;background:rgba(8,17,36,0.5);color:var(--muted);
+  }
+  .gender input{display:none}
+  .gender label.active{border-color:var(--gold);background:rgba(216,180,106,0.12);color:var(--gold-bright)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer;
+    font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;
+    background:var(--gold);color:var(--navy-900);border-radius:999px;padding:14px 28px;transition:.2s var(--ease);
+    box-shadow:0 8px 26px rgba(216,180,106,0.22);
+  }
+  .btn:hover{background:var(--gold-bright);transform:translateY(-2px)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+  .btn.secondary{background:transparent;color:var(--gold-bright);border:1px solid var(--gold);box-shadow:none}
+  .btn.secondary:hover{background:rgba(216,180,106,0.12);color:var(--gold-bright)}
+  .center{text-align:center}
+  .hidden{display:none}
+
+  .pbar-top{height:8px;background:rgba(154,166,189,0.18);border-radius:99px;overflow:hidden;margin:4px 0 22px}
+  .pbar-top i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .25s}
+  .qcount{font-size:13px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:0.05em}
+
+  .qtext{font-family:var(--font-display);font-size:26px;font-weight:500;margin:6px 0 22px;min-height:60px;color:var(--cream);line-height:1.3}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    border:1.5px solid var(--line-soft);border-radius:12px;padding:14px 16px;cursor:pointer;
+    font-size:15px;display:flex;align-items:center;gap:12px;transition:.12s;background:rgba(8,17,36,0.45);color:var(--cream);
+  }
+  .opt:hover{border-color:rgba(216,180,106,0.45);background:rgba(216,180,106,0.06)}
+  .opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);flex:0 0 auto}
+  .opt.sel{border-color:var(--gold);background:rgba(216,180,106,0.1)}
+  .opt.sel .dot{border-color:var(--gold);background:var(--gold);box-shadow:inset 0 0 0 3px var(--navy-900)}
+  .nav{display:flex;justify-content:space-between;margin-top:22px;gap:12px}
+
+  .res-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+  .res-head h2{margin:0;font-family:var(--font-display);font-weight:500;font-size:26px;color:var(--cream)}
+  .legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);flex-wrap:wrap;margin:10px 0 22px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .chip{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .chip.g{background:var(--green)}.chip.a{background:var(--amber)}.chip.r{background:var(--red)}
+
+  .scale{margin:0 0 18px;border-bottom:1px solid var(--line-soft);padding-bottom:16px}
+  .scale:last-child{border-bottom:none}
+  .scale .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .scale .name{font-weight:700;font-size:16px;color:var(--cream)}
+  .scale .val{font-variant-numeric:tabular-nums;font-weight:700;color:var(--gold-bright)}
+  .scale .tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;margin-left:8px;vertical-align:middle}
+  .tag.lo{background:rgba(123,191,138,0.16);color:var(--green)}
+  .tag.mid{background:rgba(224,185,106,0.16);color:var(--amber)}
+  .tag.hi{background:rgba(217,139,139,0.16);color:var(--red)}
+  .track{height:14px;background:rgba(154,166,189,0.18);border-radius:99px;overflow:hidden;margin:9px 0 8px;position:relative}
+  .track i{display:block;height:100%;border-radius:99px;transition:width .5s ease}
+  .track .marks{position:absolute;inset:0;pointer-events:none}
+  .track .marks b{position:absolute;top:0;bottom:0;width:1px;background:rgba(243,236,221,.35)}
+  .desc{font-size:14px;color:var(--muted);margin:6px 0 0}
+  .disclaimer{font-size:13px;color:var(--muted);background:rgba(216,180,106,0.07);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:18px}
+  .disclaimer b{color:var(--gold-bright)}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px;line-height:1.7}
+  footer a{color:var(--gold-bright)}
+  .summary-box{background:rgba(216,180,106,0.08);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
+  .summary-box h3{margin:0 0 8px;font-size:15px;color:var(--gold-bright)}
+  .summary-box p{margin:0;font-size:14px;color:var(--cream);opacity:.92}
+  .summary-box b{color:var(--gold-bright)}
+  /* Consultation CTA after result */
+  .res-consult{margin-top:18px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;
+    background:rgba(8,17,36,0.6);padding:16px 18px}
+  .res-consult h3{margin:0 0 6px;font-family:var(--font-display);font-weight:500;font-size:18px;color:var(--cream)}
+  .res-consult p{margin:0 0 8px;font-size:14px;color:var(--muted)}
+  .res-consult .price strong{color:var(--gold-bright);font-family:var(--font-display);font-size:1.25rem;font-weight:600}
+  .res-consult ul{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .res-consult a{color:var(--gold-bright);text-decoration:none;font-size:14px}
+  .res-consult a:hover{text-decoration:underline;color:var(--cream)}
+  .res-continue{display:flex;justify-content:center;margin-top:24px}
+  .res-continue .btn{gap:10px}
+  .res-continue .btn svg{transition:transform .35s var(--ease)}
+  .res-continue .btn:hover svg{transform:translateX(3px)}
+  /* Persistent "Вы — …" traits badge */
+  .traits-badge{position:relative;display:none;z-index:11}
+  .traits-badge.is-visible{display:block}
+  .traits-badge__pill{display:inline-flex;align-items:center;gap:0.5rem;max-width:min(58vw,360px);
+    padding:0.5rem 0.85rem;border:1px solid rgba(216,180,106,0.4);border-radius:999px;
+    background:rgba(10,20,40,0.72);backdrop-filter:blur(6px);color:var(--cream);
+    font-family:var(--font-body);font-size:0.88rem;cursor:pointer;
+    transition:border-color .3s var(--ease),background .3s var(--ease)}
+  .traits-badge__pill:hover{border-color:var(--gold);background:rgba(216,180,106,0.1)}
+  .traits-badge__star{color:var(--gold);font-size:0.8rem;flex-shrink:0}
+  .traits-badge__text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+  .traits-badge__text strong{color:var(--gold-bright);font-weight:500}
+  .traits-badge__caret{color:var(--gold);flex-shrink:0;transition:transform .3s var(--ease)}
+  .traits-badge.open .traits-badge__caret{transform:rotate(180deg)}
+  .traits-badge__pop{position:absolute;top:calc(100% + 0.6rem);left:0;min-width:250px;max-width:320px;
+    padding:1.1rem 1.2rem 1.2rem;border:1px solid rgba(216,180,106,0.3);border-radius:14px;
+    background:rgba(10,20,40,0.97);backdrop-filter:blur(10px);box-shadow:0 22px 50px rgba(0,0,0,0.5);
+    opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .28s var(--ease),transform .28s var(--ease),visibility .28s}
+  .traits-badge.open .traits-badge__pop{opacity:1;visibility:visible;transform:translateY(0)}
+  .traits-badge__pop-label{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem}
+  .traits-badge__pop-traits{font-family:var(--font-display);font-size:1.3rem;line-height:1.3;color:var(--cream);margin-bottom:1rem}
+  .traits-badge__pop-traits strong{color:var(--gold-bright);font-weight:600}
+  .traits-badge__edit{display:inline-flex;align-items:center;gap:0.45rem;padding:0.55rem 1.1rem;
+    border:1px solid var(--gold);border-radius:999px;color:var(--gold-bright);text-decoration:none;
+    font-size:0.78rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+    transition:background .3s var(--ease),color .3s var(--ease)}
+  .traits-badge__edit:hover{background:var(--gold);color:var(--navy-900)}
+  @media(max-width:768px){
+    .header{flex-wrap:wrap;row-gap:0.6rem;padding-top:1rem;padding-bottom:0.6rem}
+    .brand{order:1}
+    .back-link{order:2}
+    .traits-badge{order:3;flex-basis:100%}
+    .traits-badge__pill{max-width:100%;width:100%;justify-content:flex-start;font-size:0.82rem;padding:0.5rem 0.85rem}
+    .traits-badge__pop{left:0;right:auto;min-width:0;width:100%;max-width:100%}
+  }
+  @media(max-width:520px){
+    .qtext{font-size:21px}
+    header.top h1{font-size:27px}
+    .brand__name{font-size:1.2rem}
+  }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="bg__veil" aria-hidden="true"></div>
+
+<header class="header">
+  <a href="index.html" class="brand" aria-label="Аромат жизни — на главную">
+    <img class="brand__logo" src="assets/logo.png" alt="Аромат жизни" />
+    <span class="brand__name">Аромат жизни</span>
+  </a>
+  <a href="tests.html" class="back-link">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M15 9H4M8.5 4l-5 5 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Назад</span>
+  </a>
+</header>
+
+<div class="wrap">
+
+  <header class="top">
+    <h1>Опросник черт характера, ОЧХ-20</h1>
+    <div class="sub">Краткая методика диагностики акцентуаций характера · 20 утверждений · ~4 минуты</div>
+  </header>
+
+  <section id="intro" class="card instr">
+    <h2>Инструкция</h2>
+    <p>Вам предлагается список из 20 утверждений, характеризующих поведение человека. Некоторые черты поведения у вас могут быть выражены сильнее, другие — слабее.</p>
+    <p>Постарайтесь представить самые типичные ситуации и дайте первый естественный ответ, который придёт вам на ум. Отвечайте быстро, не задерживаясь долго на одном вопросе — важна ваша первая реакция.</p>
+    <p>Помните: здесь нет «хороших» и «плохих» ответов. Укажите степень выраженности каждой характеристики применительно к вашему поведению в настоящее время.</p>
+
+    <div style="margin-top:18px;font-weight:600;font-size:14px">Укажите ваш пол:</div>
+    <div class="gender" id="gender">
+      <label data-g="m"><input type="radio" name="g" value="m">Мужчина</label>
+      <label data-g="f"><input type="radio" name="g" value="f">Женщина</label>
+    </div>
+
+    <div class="meta">
+      Авторы методики: В. М. Русалов, О. Н. Манолова (2003); Е. В. Волкова (2016). В основе — опросник Г. Шмишека (1970) и классификация типов акцентуаций К. Леонгарда.
+    </div>
+    <div class="center" style="margin-top:20px">
+      <button class="btn" id="startBtn" disabled>Начать тестирование</button>
+    </div>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="qcount" id="qcount">Вопрос 1 из 20</div>
+    <div class="pbar-top"><i id="pbar"></i></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="options" id="options"></div>
+    <div class="nav">
+      <button class="btn secondary" id="prevBtn">← Назад</button>
+      <button class="btn" id="nextBtn" disabled>Далее →</button>
+    </div>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="res-head">
+      <h2>Результат теста</h2>
+      <button class="btn secondary" id="restartBtn">Пройти заново</button>
+    </div>
+    <div class="legend">
+      <span><i class="chip g"></i>4–6 — деакцентуация / норма</span>
+      <span><i class="chip a"></i>7 — тенденция</span>
+      <span><i class="chip r"></i>8–10 — акцентуация</span>
+    </div>
+    <div id="summaryBox"></div>
+    <div id="scales"></div>
+    <div class="disclaimer">
+      <b>Внимание.</b> Результаты и интерпретации, полученные без участия специалиста, не следует воспринимать слишком серьёзно. Реальную диагностическую ценность имеют только исследования, проведённые профессиональным психологом. Тест носит ознакомительный характер.
+    </div>
+    <div class="res-consult">
+      <h3>Хотите разобраться в результатах?</h3>
+      <p>Наш специалист поможет осмыслить ваш профиль и подскажет, как использовать его при создании аромата.</p>
+      <p class="price">Стоимость консультации — <strong>500&nbsp;₽</strong></p>
+      <p style="margin:10px 0 0;font-weight:600;color:var(--cream)">Чтобы записаться на сессию — свяжитесь с нами:</p>
+      <ul>
+        <li><a href="mailto:oksikbychenko@yandex.ru">oksikbychenko@yandex.ru</a></li>
+        <li><a href="tel:+79670315767">+7 (967) 031-57-67</a></li>
+        <li><a href="https://t.me/ceriodaphnia" target="_blank" rel="noopener">@ceriodaphnia</a></li>
+      </ul>
+    </div>
+
+    <div class="res-continue">
+      <a href="traits.html" class="btn continue-btn">
+        <span>Продолжить</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M3 9h11M9.5 4l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    Методика: «Опросник черт характера, ОЧХ-20» (В. М. Русалов, О. Н. Манолова, Е. В. Волкова).<br>
+    Страница носит ознакомительный характер.
+  </footer>
+</div>
+
+<script src="script.js?v=1781556944"></script>
+<script>
+const SCALES = [
+  {key:"gip", name:"Гипертимность"},
+  {key:"zas", name:"Застревание"},
+  {key:"emo", name:"Эмотивность"},
+  {key:"ped", name:"Педантичность"},
+  {key:"tre", name:"Тревожность"},
+  {key:"cik", name:"Циклотимность"},
+  {key:"dem", name:"Демонстративность"},
+  {key:"voz", name:"Возбудимость"},
+  {key:"dis", name:"Дистимность"},
+  {key:"eks", name:"Экзальтированность"}
+];
+
+const QUESTIONS = [
+  {t:"Я заражаю людей оптимизмом.", s:"gip"},
+  {t:"Я легко занимаюсь организаторской деятельностью.", s:"gip"},
+  {t:"Я с трудом забываю нанесённые мне незначительные обиды.", s:"zas"},
+  {t:"Оскорбления, нанесённые мне, вызывают у меня скрытую ярость.", s:"zas"},
+  {t:"Я — чувствительный, мягкосердечный человек.", s:"emo"},
+  {t:"Трагические фильмы могут взволновать меня до слёз.", s:"emo"},
+  {t:"Я слежу за тем, чтобы каждая вещь лежала на своём месте.", s:"ped"},
+  {t:"Я стремлюсь навести порядок везде и во всём.", s:"ped"},
+  {t:"Я боюсь спуститься в тёмный погреб.", s:"tre"},
+  {t:"Я — боязливый человек.", s:"tre"},
+  {t:"У меня бывают беспричинные колебания настроения.", s:"cik"},
+  {t:"Период хорошего настроения у меня может смениться апатией.", s:"cik"},
+  {t:"Я постоянно стремлюсь быть в центре внимания.", s:"dem"},
+  {t:"Я прекрасно чувствую себя на сцене.", s:"dem"},
+  {t:"Я готов ударить человека, если он меня сильно оскорбил.", s:"voz"},
+  {t:"Когда меня задевают за «больное», я могу ударить.", s:"voz"},
+  {t:"Я — замкнутый, немногословный человек.", s:"dis"},
+  {t:"Я долгое время могу быть в подавленном настроении.", s:"dis"},
+  {t:"Моё радостное настроение резко сменяется глубокой печалью.", s:"eks"},
+  {t:"Я подвержен частым перепадам настроения — от радости к печали.", s:"eks"}
+];
+
+const ANSWERS = [
+  {label:"Не выражено", v:1},
+  {label:"Скорее не выражено", v:2},
+  {label:"Выражено", v:3},
+  {label:"Заметно выражено", v:4},
+  {label:"Очень выражено", v:5}
+];
+
+const DESC = {
+  gip:{
+    low:"Невысокая гипертимность: вам ближе спокойный, размеренный темп. Вы не стремитесь постоянно быть активным и инициативным, можете быть сдержанны в проявлении эмоций.",
+    mid:"Умеренная гипертимность: вы достаточно энергичны и оптимистичны, легко включаетесь в деятельность, но при необходимости способны притормозить.",
+    high:"Выраженная гипертимность: вы оптимистичны, активны, общительны, заражаете окружающих энергией, легко беретесь за организаторские задачи. Оборотная сторона — поверхностность, недисциплинированность, склонность не доводить начатое до конца."
+  },
+  zas:{
+    low:"Низкое застревание: вы малочувствительны к мелким обидам и критике, не злопамятны, легко отпускаете неприятные ситуации.",
+    mid:"Умеренное застревание: вы цените справедливость и помните значимые обиды, но в целом сохраняете гибкость в отношениях.",
+    high:"Выраженное застревание: вы долго удерживаете в памяти обиды и оскорбления, склонны к стойким аффектам, честолюбивы и принципиальны. Возможны обидчивость, подозрительность и упорство в отстаивании своих интересов."
+  },
+  emo:{
+    low:"Низкая эмотивность: вы не склонны бурно выражать сострадание, рациональны и сдержанны в проявлении чувств к окружающим.",
+    mid:"Умеренная эмотивность: вы чувствительны и отзывчивы, способны сопереживать, но эмоции не захватывают вас полностью.",
+    high:"Выраженная эмотивность: вы мягкосердечны, чувствительны, глубоко сопереживаете другим, тонко реагируете на искусство и трагические сюжеты. Возможны повышенная ранимость и слезливость."
+  },
+  ped:{
+    low:"Низкая педантичность: вам не свойственно стремление к постоянному порядку и жёсткому самоконтролю, вы относитесь к деталям проще.",
+    mid:"Умеренная педантичность: вы аккуратны и добросовестны, цените порядок, но не доводите это до крайностей.",
+    high:"Выраженная педантичность: вы стремитесь к порядку, аккуратности и тщательности во всём, добросовестны и обязательны. Оборотная сторона — нерешительность, чрезмерная проверка и трудность принятия быстрых решений."
+  },
+  tre:{
+    low:"Низкая тревожность: вы бесстрашны в незнакомых ситуациях, мало беспокоитесь о возможных неприятностях.",
+    mid:"Умеренная тревожность: вы осторожны и предусмотрительны, но способны справляться с волнением.",
+    high:"Выраженная тревожность: вам свойственны боязливость, робость, неуверенность, склонность к опасениям и предчувствию неприятностей. Возможна повышенная мнительность."
+  },
+  cik:{
+    low:"Низкая циклотимность: ваше настроение достаточно ровное, мало зависит от внешних обстоятельств.",
+    mid:"Умеренная циклотимность: настроение меняется в зависимости от ситуации, но без резких амплитуд.",
+    high:"Выраженная циклотимность: вам свойственна смена фаз приподнятого и сниженного настроения, периоды активности чередуются с апатией. Поведение и работоспособность заметно зависят от текущей фазы."
+  },
+  dem:{
+    low:"Низкая демонстративность: вы не стремитесь быть в центре внимания, скромны, искренни и не склонны к позёрству.",
+    mid:"Умеренная демонстративность: вы умеете подать себя и комфортно чувствуете себя в обществе, но без чрезмерной игры на публику.",
+    high:"Выраженная демонстративность: вы стремитесь быть в центре внимания, артистичны, легко устанавливаете контакты, уверенно держитесь на сцене. Оборотная сторона — эгоцентризм, склонность приукрашивать и манипулировать."
+  },
+  voz:{
+    low:"Низкая возбудимость: вам свойственны высокий самоконтроль, выдержка и способность сдерживать импульсы.",
+    mid:"Умеренная возбудимость: вы обычно контролируете себя, но в напряжённых ситуациях можете реагировать резче.",
+    high:"Выраженная возбудимость: вам свойственны импульсивность, вспыльчивость, ослабленный контроль над влечениями, склонность к резким реакциям в конфликте. Возможны раздражительность и агрессивные вспышки."
+  },
+  dis:{
+    low:"Низкая дистимность: вы деятельны, подвижны и общительны, склонны к позитивному взгляду на жизнь.",
+    mid:"Умеренная дистимность: вы серьёзны и вдумчивы, цените глубину, но не склонны к постоянному унынию.",
+    high:"Выраженная дистимность: вам свойственны сниженный фон настроения, серьёзность, замкнутость, немногословность, склонность фиксироваться на теневых сторонах жизни. Возможны утомляемость и предпочтение одиночества."
+  },
+  eks:{
+    low:"Низкая экзальтированность: ваши эмоциональные реакции ровные и сдержанные, без резких перепадов от восторга к печали.",
+    mid:"Умеренная экзальтированность: вы эмоционально отзывчивы и искренни, переживания достаточно яркие, но управляемые.",
+    high:"Выраженная экзальтированность: вам свойственны интенсивные и быстро меняющиеся эмоции — лёгкий переход от восторга к глубокой печали, искренность чувств, впечатлительность. Возможны эмоциональная неустойчивость и драматизация."
+  }
+};
+
+const state = {gender:null, idx:0, answers:new Array(QUESTIONS.length).fill(null)};
+const el = id => document.getElementById(id);
+const introEl=el('intro'), quizEl=el('quiz'), resultEl=el('result');
+
+document.querySelectorAll('#gender label').forEach(lab=>{
+  lab.addEventListener('click',()=>{
+    document.querySelectorAll('#gender label').forEach(l=>l.classList.remove('active'));
+    lab.classList.add('active');
+    lab.querySelector('input').checked=true;
+    state.gender=lab.dataset.g;
+    // Save gender to the shared store so traits.html can show the right word forms
+    if(window.AromaStore && window.AromaStore.writeGender){ window.AromaStore.writeGender(state.gender); }
+    el('startBtn').disabled=false;
+  });
+});
+
+el('startBtn').onclick=()=>{
+  introEl.classList.add('hidden');
+  quizEl.classList.remove('hidden');
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+function render(){
+  const q=QUESTIONS[state.idx];
+  el('qcount').textContent=`Вопрос ${state.idx+1} из ${QUESTIONS.length}`;
+  el('pbar').style.width=((state.idx)/QUESTIONS.length*100)+'%';
+  el('qtext').textContent=q.t;
+  const opts=el('options'); opts.innerHTML='';
+  ANSWERS.forEach(a=>{
+    const d=document.createElement('div');
+    d.className='opt'+(state.answers[state.idx]===a.v?' sel':'');
+    d.innerHTML=`<span class="dot"></span><span>${a.label}</span>`;
+    d.onclick=()=>{
+      state.answers[state.idx]=a.v;
+      render();
+      setTimeout(()=>{ if(state.idx<QUESTIONS.length-1){state.idx++;render();} },180);
+    };
+    opts.appendChild(d);
+  });
+  el('prevBtn').style.visibility = state.idx===0?'hidden':'visible';
+  el('nextBtn').disabled = state.answers[state.idx]===null;
+  el('nextBtn').textContent = state.idx===QUESTIONS.length-1 ? 'Показать результат' : 'Далее →';
+}
+
+el('prevBtn').onclick=()=>{ if(state.idx>0){state.idx--;render();} };
+el('nextBtn').onclick=()=>{
+  if(state.answers[state.idx]===null) return;
+  if(state.idx<QUESTIONS.length-1){state.idx++;render();}
+  else finish();
+};
+
+function finish(){
+  const scores={};
+  SCALES.forEach(s=>scores[s.key]=0);
+  QUESTIONS.forEach((q,i)=>{ scores[q.s]+=state.answers[i]; });
+
+  quizEl.classList.add('hidden');
+  resultEl.classList.remove('hidden');
+  el('pbar').style.width='100%';
+
+  // Pass the chosen gender straight to the traits page via the URL,
+  // so the right (masculine/feminine) list is shown for sure.
+  if(state.gender==='m' || state.gender==='f'){
+    const cont=document.querySelector('.res-continue a, a.continue-btn');
+    if(cont){ cont.setAttribute('href','traits.html?g='+state.gender); }
+  }
+
+  const ordered=[...SCALES].sort((a,b)=>scores[b.key]-scores[a.key]);
+  const high=ordered.filter(s=>scores[s.key]>=8);
+  const sb=el('summaryBox');
+  let sumText;
+  if(high.length){
+    sumText=`Наиболее выраженные черты: <b>${high.map(s=>s.name.toLowerCase()).join(', ')}</b>. По этим шкалам результат достигает уровня акцентуации (8–10 баллов) — соответствующие особенности характера проявляются у вас ярко.`;
+  } else {
+    const top=ordered[0];
+    sumText=`Ярко выраженных акцентуаций (8 и более баллов) не выявлено — профиль достаточно сбалансирован. Относительно сильнее других проявлена шкала «${top.name.toLowerCase()}» (${scores[top.key]} б.).`;
+  }
+  sb.innerHTML=`<div class="summary-box"><h3>Краткий вывод</h3><p>${sumText}</p></div>`;
+
+  const box=el('scales'); box.innerHTML='';
+  ordered.forEach(s=>{
+    const v=scores[s.key];
+    let tagClass, tagText, barColor, descText;
+    if(v>=8){ tagClass='hi'; tagText='акцентуация'; barColor='var(--red)'; descText=DESC[s.key].high; }
+    else if(v===7){ tagClass='mid'; tagText='тенденция'; barColor='var(--amber)'; descText=DESC[s.key].mid; }
+    else { tagClass='lo'; tagText='норма'; barColor='var(--green)'; descText=DESC[s.key].low; }
+
+    const pct=((v-2)/(10-2))*100;
+    const div=document.createElement('div');
+    div.className='scale';
+    div.innerHTML=`
+      <div class="row">
+        <span><span class="name">${s.name}</span><span class="tag ${tagClass}">${tagText}</span></span>
+        <span class="val">${v} / 10</span>
+      </div>
+      <div class="track">
+        <i style="width:${pct}%;background:${barColor}"></i>
+        <div class="marks">
+          <b style="left:${((7-2)/8)*100}%"></b>
+          <b style="left:${((8-2)/8)*100}%"></b>
+        </div>
+      </div>
+      <p class="desc">${descText}</p>`;
+    box.appendChild(div);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+el('restartBtn').onclick=()=>{
+  state.idx=0; state.answers.fill(null);
+  resultEl.classList.add('hidden');
+  introEl.classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>

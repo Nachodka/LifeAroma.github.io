@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Аромат жизни — метафорические ассоциативные карты</title>
+  <meta name="description" content="Метафорические ассоциативные карты — мягкий инструмент самопознания. Задайте свой вопрос, вытяните карту и загляните внутрь себя." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="stylesheet" href="style.css?v=1781556944" />
+</head>
+<body class="page-paths">
+  <!-- Starry background -->
+  <div class="bg bg--stars" aria-hidden="true">
+    <div class="bg__veil bg__veil--stars"></div>
+  </div>
+
+  <!-- Header / Nav -->
+  <header class="header">
+    <a href="index.html" class="brand" aria-label="Аромат жизни — на главную">
+      <img class="brand__logo" src="assets/logo.png" alt="Аромат жизни" />
+      <span class="brand__name">Аромат жизни</span>
+    </a>
+
+    <a href="tests.html" class="back-link">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M15 9H4M8.5 4l-5 5 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Назад</span>
+    </a>
+  </header>
+
+  <!-- Cards experience -->
+  <main class="section section--cards-page">
+    <div class="cards-stage" id="stage">
+
+      <!-- LEFT: the card / deck -->
+      <div class="cards-visual">
+        <!-- Deck back (before drawing) -->
+        <div class="deck" id="deck" aria-hidden="true">
+          <span class="deck__card deck__card--3"></span>
+          <span class="deck__card deck__card--2"></span>
+          <span class="deck__card deck__card--1">
+            <span class="deck__mark">✦</span>
+          </span>
+        </div>
+
+        <!-- The drawn card (hidden until drawn) -->
+        <figure class="drawn" id="drawn" hidden>
+          <img id="drawnImg" src="" alt="Ваша метафорическая карта" />
+        </figure>
+      </div>
+
+      <!-- RIGHT: the unfolding text -->
+      <div class="cards-text">
+
+        <!-- STEP 1 — intro (appears piece by piece) -->
+        <div class="cards-step" id="step-intro">
+          <p class="section__label reveal-seq">Путь к себе · карты</p>
+          <h1 class="section__title reveal-seq">Метафорические карты —<br />путь к себе</h1>
+
+          <p class="prose reveal-seq">Метафорические ассоциативные карты — это рабочий инструмент самопознания, который используют психологи, коучи и терапевты по всему миру.</p>
+
+          <p class="prose reveal-seq">Принцип простой и совсем не загадочный. Одну и ту же карту разные люди видят по-разному: кто-то заметит дорогу, кто-то — фигуру вдали, кто-то — свет или тень. Картинка одна, а смысл у каждого свой. И этот смысл человек берёт не из карты — он достаёт его из себя.</p>
+
+          <p class="prose reveal-seq">Именно поэтому карты работают. Они не дают готовых ответов и ничего не предсказывают. Они лишь дают повод посмотреть внутрь — и то, что вы там увидите, и будет вашим настоящим ответом.</p>
+
+          <div class="cards-divider reveal-seq"><span>✦</span></div>
+
+          <p class="prose prose--lead reveal-seq">Прежде чем вытянуть карту — остановитесь на мгновение.</p>
+          <p class="prose reveal-seq">Задайте себе вопрос. Тот, что важен для вас сейчас: о себе, своих желаниях, о том, каким вы хотите быть. Сформулируйте его честно и про себя.</p>
+          <p class="prose reveal-seq">Карту можно вытянуть только один раз. Не торопитесь — именно она станет ответом на ваш вопрос. И отвечать будет не картинка, а то, что вы в ней увидите.</p>
+
+          <p class="cards-ready reveal-seq">Когда будете готовы — вытягивайте.</p>
+
+          <div class="cards-actions reveal-seq">
+            <button class="btn" id="drawBtn" type="button">
+              <span>Вытянуть карту</span>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2 — after drawing -->
+        <div class="cards-step" id="step-result" hidden>
+          <p class="section__label reveal-seq">Ваша карта</p>
+          <h2 class="section__title section__title--sm reveal-seq">Вот ваша карта.</h2>
+
+          <p class="prose reveal-seq">Важно понять одно: эту же карту тысячи других людей увидели бы совершенно иначе. Кто-то прошёл бы мимо деталей, которые сейчас бросились в глаза именно вам. И это не случайность — ваше внимание само выбрало то, что отзывается вашему вопросу.</p>
+
+          <p class="prose reveal-seq">То, что вы заметили первым, какое чувство это вызвало, с чем это связалось у вас в голове — всё это говорит не о карте, а о вас. Карта просто стала зеркалом.</p>
+
+          <p class="prose prose--lead reveal-seq cards-prompt">Побудьте с ней минуту и ответьте себе честно:</p>
+
+          <!-- Three reflective questions, appear one after another -->
+          <ol class="cards-questions" id="questions">
+            <li class="cards-question" data-q="1">
+              <span class="cards-question__num">1</span>
+              <span class="cards-question__text">Что я заметил на этой карте в первую очередь?</span>
+            </li>
+            <li class="cards-question" data-q="2">
+              <span class="cards-question__num">2</span>
+              <span class="cards-question__text">Какое чувство она во мне вызывает?</span>
+            </li>
+            <li class="cards-question" data-q="3">
+              <span class="cards-question__num">3</span>
+              <span class="cards-question__text">Как это связано с моим вопросом?</span>
+            </li>
+          </ol>
+
+          <!-- Single button shown right after the questions; reveals the rest on click -->
+          <div class="cards-actions" id="revealWrap" hidden>
+            <button class="btn" id="revealBtn" type="button">
+              <span>Продолжить</span>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="cards-actions" id="continueWrap" hidden>
+            <div class="cards-gender" id="cardsGender">
+              <p class="cards-gender__label">Прежде чем продолжить — укажите ваш пол:</p>
+              <div class="cards-gender__opts" id="genderOpts">
+                <label data-g="m"><input type="radio" name="cg" value="m">Мужчина</label>
+                <label data-g="f"><input type="radio" name="cg" value="f">Женщина</label>
+              </div>
+              <p class="cards-gender__hint">Это поможет показать подходящие формулировки на следующем шаге.</p>
+            </div>
+
+            <p class="cards-ready">Когда укажете пол — нажмите «Перейти к чертам».</p>
+            <a class="btn is-disabled" id="continueBtn" href="traits.html" aria-disabled="true">
+              <span>Перейти к чертам</span>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+
+            <!-- Psychologist recommendation -->
+            <div class="cards-psy">
+              <div class="cards-psy__photo">
+                <img src="assets/consultant.jpg" alt="Психолог Оксана" loading="lazy" />
+              </div>
+              <div class="cards-psy__body">
+                <span class="cards-psy__eyebrow">Рекомендация психолога</span>
+                <p class="cards-psy__text">Карта уже показала вам что-то важное. Если захочется разобраться в этом глубже и понять, что за этим стоит, — можно сделать это вместе со специалистом. На консультации мы бережно обсудим то, что вы увидели, и поможем превратить это в опору для вашего будущего аромата.</p>
+                <p class="cards-psy__price">Стоимость консультации — <strong>500&nbsp;₽</strong></p>
+                <p class="cards-psy__cta">Чтобы записаться на сессию — свяжитесь с нами:</p>
+                <ul class="cards-psy__contacts">
+                  <li><a href="mailto:oksikbychenko@yandex.ru">oksikbychenko@yandex.ru</a></li>
+                  <li><a href="tel:+79670315767">+7 (967) 031-57-67</a></li>
+                  <li><a href="https://t.me/ceriodaphnia" target="_blank" rel="noopener">@ceriodaphnia</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Where to go next -->
+            <div class="flow-nav">
+              <a class="flow-nav__btn" href="tests.html">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M15 9H3M8 4L3 9l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Вернуться к познанию себя</span>
+              </a>
+              <a class="flow-nav__btn flow-nav__btn--primary" href="create.html">
+                <span>Перейти к созданию аромата</span>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js?v=1781556944"></script>
+  <script>
+  (function () {
+    // Full deck — all 20 uploaded cards
+    const DECK = [
+      'deck_caveexit.jpg', 'deck_cocoon-2.jpg', 'deck_door-3.jpg', 'deck_fork-4.jpg',
+      'deck_hearth-5.jpg', 'deck_helpinghand-6.jpg', 'deck_lighthouse-7.jpg', 'deck_meeting-8.jpg',
+      'deck_mistbridge-9.jpg', 'deck_sprout-10.jpg', 'deck_stargazer-11.jpg', 'deck_thinice-12.jpg',
+      'deck_treeshelter-13.jpg', 'imag1_whale-14.jpg', 'imag2_snailhouse-15.jpg', 'imag3_moonstairs-16.jpg',
+      'imag4_foxlantern-17.jpg', 'res1_throughway-18.jpg', 'res2_renewal-19.jpg', 'res3_letgo-20.jpg'
+    ];
+
+    const stage = document.getElementById('stage');
+    const deck = document.getElementById('deck');
+    const drawn = document.getElementById('drawn');
+    const drawnImg = document.getElementById('drawnImg');
+    const drawBtn = document.getElementById('drawBtn');
+    const stepIntro = document.getElementById('step-intro');
+    const stepResult = document.getElementById('step-result');
+    const questions = document.getElementById('questions');
+    const revealWrap = document.getElementById('revealWrap');
+    const revealBtn = document.getElementById('revealBtn');
+    const continueWrap = document.getElementById('continueWrap');
+    const genderOpts = document.getElementById('genderOpts');
+    const continueBtn = document.getElementById('continueBtn');
+
+    // Gender choice gates the Продолжить button and is saved so traits.html
+    // (and the persistent badge) show the right word forms.
+    let chosenGender = null;
+    if (genderOpts) {
+      genderOpts.querySelectorAll('label').forEach((lab) => {
+        lab.addEventListener('click', () => {
+          genderOpts.querySelectorAll('label').forEach((l) => l.classList.remove('active'));
+          lab.classList.add('active');
+          chosenGender = lab.dataset.g;
+          if (window.AromaStore && window.AromaStore.writeGender) {
+            window.AromaStore.writeGender(chosenGender);
+          }
+          if (continueBtn) {
+            continueBtn.setAttribute('href', 'traits.html?g=' + chosenGender);
+            continueBtn.classList.remove('is-disabled');
+            continueBtn.removeAttribute('aria-disabled');
+          }
+        });
+      });
+    }
+    // Block the Продолжить click until a gender is chosen
+    if (continueBtn) {
+      continueBtn.addEventListener('click', (e) => {
+        if (!chosenGender) {
+          e.preventDefault();
+          if (genderOpts) {
+            genderOpts.classList.add('shake');
+            setTimeout(() => genderOpts.classList.remove('shake'), 500);
+          }
+        }
+      });
+    }
+
+    // Reveal the intro text pieces one after another
+    function revealSequence(container, startDelay, step) {
+      const items = container.querySelectorAll('.reveal-seq');
+      let d = startDelay || 0;
+      items.forEach((el) => {
+        setTimeout(() => el.classList.add('is-in'), d);
+        d += step || 220;
+      });
+      return d;
+    }
+
+    // Preload all card images so the draw feels instant
+    DECK.forEach((src) => { const i = new Image(); i.src = 'assets/cards/' + src; });
+
+    // Kick off the intro reveal on load
+    revealSequence(stepIntro, 150, 240);
+
+    let drawnAlready = false;
+
+    drawBtn.addEventListener('click', () => {
+      if (drawnAlready) return;
+      drawnAlready = true;
+      drawBtn.disabled = true;
+
+      // Pick a random card
+      const pick = DECK[Math.floor(Math.random() * DECK.length)];
+      drawnImg.src = 'assets/cards/' + pick;
+
+      // Animate the deck out, then show the drawn card
+      deck.classList.add('is-drawing');
+
+      setTimeout(() => {
+        deck.hidden = true;
+        drawn.hidden = false;
+        // force reflow then animate the card in
+        void drawn.offsetWidth;
+        drawn.classList.add('is-in');
+      }, 520);
+
+      // Swap the text: hide intro, show result
+      setTimeout(() => {
+        stepIntro.hidden = true;
+        stepResult.hidden = false;
+        stage.classList.add('is-result');
+
+        // Reveal result text, then the questions one by one, then the continue button
+        const afterText = revealSequence(stepResult, 100, 240);
+
+        const qs = questions.querySelectorAll('.cards-question');
+        let qd = afterText + 200;
+        qs.forEach((q) => {
+          setTimeout(() => q.classList.add('is-in'), qd);
+          qd += 1100; // each question appears after a thoughtful pause
+        });
+
+        // After the last question, reveal only the single «Продолжить» button
+        setTimeout(() => {
+          revealWrap.hidden = false;
+          void revealWrap.offsetWidth;
+          revealWrap.classList.add('is-in');
+        }, qd + 300);
+      }, 700);
+      // (no scrollIntoView — the card must stay put while the text unfolds)
+    });
+
+    // Pressing «Продолжить» reveals everything else: gender, psychologist, navigation
+    if (revealBtn) {
+      revealBtn.addEventListener('click', () => {
+        revealWrap.hidden = true;
+        continueWrap.hidden = false;
+        void continueWrap.offsetWidth;
+        continueWrap.classList.add('is-in');
+        // reveal its inner pieces in sequence for a smooth unfold
+        revealSequence(continueWrap, 60, 160);
+      });
+    }
+  })();
+  </script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
